@@ -1,6 +1,6 @@
 .letters-container {
   position: fixed;
-  top: 10px;
+  top: 20px;
   left: 10px;
 
   display: grid;
@@ -19,4 +19,9 @@
   color: inherit;
   font-size: inherit;
   transform: translateY(0px);
+  font-family: inherit;
+}
+
+.letter-changed {
+  opacity: 0.5;
 }

@@ -29,18 +29,19 @@
 
 <div class="letters-container">
   {#each alphabet as letter, i}
-    <div class="">
+    <div class={userMap[letter] == letter ? "letter-changed" : ""}>
       {letter.toUpperCase()}
     </div>
     <div>
-      ⇾
+      <span class="{userMap[letter] == letter ? 'letter-changed' : ''}">⇾</span>
       <input
         oninput={(e) => {
           changeLetterInput(letter, e);
         }}
         onfocus={onFocus}
-        class="letter-input"
+        class="letter-input {userMap[letter] == letter ? 'letter-changed' : ''}"
         value={userMap[letter]?.toUpperCase()}
+        name="letter-input-{letter}"
       />
     </div>
   {/each}
