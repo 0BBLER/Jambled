@@ -4,10 +4,6 @@
 .hidden {
   visibility: hidden;
 }
-
-.main-container {
-}
-
 .main-container.dark {
   background-color: rgb(36, 36, 36);
 }
@@ -17,6 +13,9 @@
   line-height: 1.6;
   padding: 16px;
   display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
 }
 
 #game.dark {
@@ -52,4 +51,12 @@
 .toast-message.active {
   right: 30px;
   opacity: 1;
+}
+
+.midsection {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
 }

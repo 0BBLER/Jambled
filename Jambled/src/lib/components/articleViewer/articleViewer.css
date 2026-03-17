@@ -1,7 +1,9 @@
 .article-preview {
-  margin-left: 90px;
   border-left: 1px solid rgb(112, 112, 112);
-  padding-left: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto; 
+  height: 100%;
 }
 
 #article a {
@@ -25,4 +27,6 @@
 }
 
 .image-hidden {
+  filter: brightness(0%);
+  cursor: not-allowed;
 }

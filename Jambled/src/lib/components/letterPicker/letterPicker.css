@@ -1,13 +1,10 @@
 .letters-container {
-  position: fixed;
-  top: 20px;
-  left: 10px;
-
   display: grid;
   grid-template-columns: 1;
   grid-template-rows: repeat(26, 30px);
-  grid-template-columns: 20px 1fr;
+  grid-template-columns: min-content max-content;
   font-size: 1.3em;
+  justify-self: center;
 }
 
 .letter-input {

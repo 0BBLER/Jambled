@@ -1,5 +1,5 @@
-import { CharManager, Letter } from "./charManager";
 import confetti from "@hiseb/confetti";
+import { CharManager, Letter } from "./charManager";
 import { ToastManager } from "./toastManager";
 
 export class Game {

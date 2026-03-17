@@ -1,8 +1,8 @@
 <script lang="ts">
   import { CharManager } from "$lib/charManager";
-  import { getArticleData } from "$lib/wiki";
-  import { userConfig } from "$lib/store";
   import { Game } from "$lib/game.svelte";
+  import { userConfig } from "$lib/store";
+  import { getArticleData } from "$lib/wiki";
 
   interface Props {
     charManager: CharManager;
@@ -65,10 +65,17 @@
       element.remove();
     });
 
+    articleDiv.querySelectorAll("video").forEach((element) => {
+      element.remove();
+    });
+
     articleDiv.querySelectorAll("img").forEach((element) => {
       element.classList.add("image-hidden");
       element.alt = "";
       element.draggable = false;
+      element.oncontextmenu = (e) => {
+        e.preventDefault();
+      };
     });
 
     const walker = document.createTreeWalker(
