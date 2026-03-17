@@ -4,41 +4,30 @@
   visibility: hidden;
 }
 
+.main-container {
+
+}
+
+.main-container.dark {
+  background-color: rgb(36, 36, 36);
+}
+
 #game {
   font-family: "Noto Sans", sans-serif;
   line-height: 1.6;
   padding: 16px;
+  display: flex;
 }
 
 #game.dark {
-  background-color: rgb(36, 36, 36);
   color: rgb(204, 204, 204);
+  background-color: rgb(36, 36, 36);
+
 }
 
 #game.dark a {
   color: rgb(71, 185, 230);
 }
-
-#article a {
-  text-decoration: none;
-  color: rgb(9, 129, 209);
-}
-
-#article.dark .infobox-header {
-  background-color: rgb(70, 70, 70) !important;
-}
-
-#article table.infobox {
-  float: right;
-  margin-left: 10px;
-  padding: 8px;
-}
-
-#article.dark table.infobox {
-  border: 2px solid rgb(61, 61, 61);
-  background-color: rgba(223, 223, 223, 0.055);
-}
-
 .no-access {
   pointer-events: none;
   opacity: 0.2;

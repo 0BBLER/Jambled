@@ -1,0 +1,22 @@
+.letters-container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+
+  display: grid;
+  grid-template-columns: 1;
+  grid-template-rows: repeat(26, 30px);
+  grid-template-columns: 20px 1fr;
+  font-size: 1.3em;
+}
+
+.letter-input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgb(112, 112, 112);
+  width: 0.9em;
+  outline: none;
+  color: inherit;
+  font-size: inherit;
+  transform: translateY(0px);
+}

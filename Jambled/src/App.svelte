@@ -1,83 +1,46 @@
 <script lang="ts">
-  import { CharManager } from "./lib/charManager";
-  import { getArticleData } from "./lib/wiki";
+  import { CharManager, type Letter } from "$lib/charManager";
+  import { getArticleData } from "$lib/wiki";
+  import { userConfig } from "$lib/store";
+  import ArticleViewer from "$lib/components/articleViewer/articleViewer.svelte";
+  import LetterPicker from "$lib/components/letterPicker/letterPicker.svelte";
+  import { Game } from "$lib/game";
 
-  let articleDiv = $state<HTMLDivElement>();
-  let articleTitle = $state<string>();
-  let articleLoaded = $state<boolean>(false);
+  let articleViewer = $state<ArticleViewer>();
 
-  let darkMode = $state<boolean>(true);
+  let game = $state<Game>(new Game());
+  let reactiveUserMap = $state<Record<Letter, Letter>>({
+    ...game.charManager.userMap,
+  });
 
-  const charManager: CharManager = new CharManager();
-  charManager.generateMap();
+  function start() {
+    if (articleViewer) {
+      game.start();
+      articleViewer.loadData();
 
-  //fetch article contents and set article container div
-  async function loadData() {
-    if (!articleDiv) return;
-    const articleData = await getArticleData();
-    articleTitle = articleData.title;
-    articleDiv.innerHTML = articleData.text["*"];
-    cleanArticle();
-    articleLoaded = true;
+      reactiveUserMap = {
+        ...game.charManager.userMap,
+      };
+    }
   }
 
-  //remove elements from articleDiv by selector
-  function removeBySelector(selector: string) {
-    if (!articleDiv) return;
-    articleDiv
-      .querySelectorAll(selector)
-      .forEach((element) => element.remove());
-  }
-
-  //clean the article by removing a bunch of things
-  function cleanArticle() {
-    if (!articleDiv) return;
-    removeBySelector(".reference");
-    removeBySelector(".mw-editsection");
-    removeBySelector(".navbox");
-    removeBySelector(".metadata");
-    removeBySelector(".references");
-    removeBySelector(".hatnote");
-    removeBySelector(".infobox-title");
-
-    removeBySelector("#Notes");
-    removeBySelector("#References");
-    removeBySelector("#Further_reading");
-    removeBySelector("#External_links");
-
-    articleDiv.querySelectorAll("a").forEach((element) => {
-      element.href = "javascript:void(0)";
-    });
-
-    articleDiv.querySelectorAll("audio").forEach((element) => {
-      element.remove();
-    });
-
-    const walker = document.createTreeWalker(
-      articleDiv,
-      NodeFilter.SHOW_TEXT,
-      null,
-    );
-    let current = walker.nextNode();
-    while (current) {
-      if (current.nodeValue) {
-        current.nodeValue = charManager.getShuffled(current.nodeValue);
-      }
-      current = walker.nextNode();
+  function setLetterCallback(from: string, to: string) {
+    if (game.charManager.setUserMap(from, to)) {
+      reactiveUserMap[from] = to;
+      articleViewer?.updateCharacters();
     }
   }
 </script>
 
-<button onclick={loadData}>Load data</button>
-
-<div id="game" class={darkMode ? "dark" : ""}>
-  <div class={`article-preview ${articleLoaded ? "" : "hidden"}`}>
-    <h1>{articleTitle ? charManager.getShuffled(articleTitle) : ""}</h1>
-    <hr />
-    <div
-      bind:this={articleDiv}
-      id={`article`}
-      class={`${darkMode ? "dark" : ""}`}
-    ></div>
+<div class="main-container">
+  <button onclick={start}>Start</button>
+  <div id="game" class={userConfig.darkMode ? "dark" : ""}>
+    <LetterPicker
+      userMap={reactiveUserMap}
+      {setLetterCallback}
+      charManager={game.charManager}
+    ></LetterPicker>
+    <ArticleViewer charManager={game.charManager} bind:this={articleViewer}
+    ></ArticleViewer>
   </div>
 </div>
