@@ -1,5 +1,6 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
- */@import url("https://fonts.googleapis.com/css2?family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
+ */
+@import url("https://fonts.googleapis.com/css2?family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
 .hidden {
   visibility: hidden;
 }
@@ -29,4 +30,26 @@
 .no-access {
   pointer-events: none;
   opacity: 0.2;
+}
+
+.score-negative {
+  color: rgb(231, 111, 111);
+}
+
+.score-positive {
+  color: rgb(165, 245, 158);
+}
+
+.toast-message {
+  position: fixed;
+  top: 30px;
+  right: -100px;
+  font-size: 2em;
+  transition: 500ms ease-in-out;
+  opacity: 0;
+}
+
+.toast-message.active {
+  right: 30px;
+  opacity: 1;
 }

@@ -12,19 +12,19 @@
   <div>Breakdown</div>
   <div class="score-breakdown">
     <div>
-      <span class="breakdown-negative"
+      <span class="score-negative"
         >{game.charGuesses * game.scoringRules.char}</span
       >
       from {game.charGuesses}
       character guess{game.charGuesses == 1 ? "" : "es"}
     </div>
     <div>
-      <span class="breakdown-negative"
+      <span class="score-negative"
         >{game.titleGuesses * game.scoringRules.title}</span
       >
       from {game.titleGuesses} title guess{game.titleGuesses == 1 ? "" : "es"}
     </div>
-    <div><span class="breakdown-positive">+{game.scoringRules.win}</span> from 1 win</div>
+    <div><span class="score-positive">+{game.scoringRules.win}</span> from 1 win</div>
   </div>
 </div>
 

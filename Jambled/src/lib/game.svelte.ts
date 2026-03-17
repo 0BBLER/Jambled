@@ -1,13 +1,16 @@
 import { CharManager, Letter } from "./charManager";
 import confetti from "@hiseb/confetti";
+import { ToastManager } from "./toastManager";
 
 export class Game {
+  toastManager: ToastManager = new ToastManager();
   charManager: CharManager;
   articleTitle: string;
 
   charGuesses = $state(0);
   titleGuesses = $state(0);
   done = $state(false);
+  previousScore = 0;
 
   scoringRules = {
     char: -100,
@@ -21,14 +24,25 @@ export class Game {
     this.charManager = new CharManager();
     this.articleTitle = "";
     this.done = false;
-    this.updateScore();
+    this.updateScore(false);
   }
 
-  updateScore() {
+  updateScore(toast: boolean) {
     this.score =
       this.scoringRules.win +
       this.charGuesses * this.scoringRules.char +
       this.titleGuesses * this.scoringRules.title;
+    if (toast && this.score != this.previousScore) {
+      const difference = this.score - this.previousScore;
+      const negative = difference < 0;
+      let prefix = negative ? "-" : "+";
+      const message = `${prefix}${Math.abs(difference)}`;
+      this.toastManager.addToast(
+        message,
+        `score-${negative ? "negative" : "positive"}`,
+      );
+    }
+    this.previousScore = this.score;
   }
 
   start() {
@@ -37,7 +51,7 @@ export class Game {
     this.done = false;
     this.charGuesses = 0;
     this.titleGuesses = 0;
-    this.updateScore();
+    this.updateScore(false);
   }
 
   guessTitle(guess: string) {
@@ -54,14 +68,14 @@ export class Game {
       });
       this.done = true;
     }
-    this.updateScore();
+    this.updateScore(true);
   }
 
   modUserMap(from: Letter, to: Letter) {
     const success = this.charManager.modUserMap(from, to);
     if (success) {
       this.charGuesses = this.charGuesses + 1;
-      this.updateScore();
+      this.updateScore(true);
     }
     return success;
   }

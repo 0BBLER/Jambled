@@ -23,11 +23,3 @@
 .score-breakdown {
   color: rgb(230, 230, 230);
 }
-
-.breakdown-negative {
-  color: rgb(245, 158, 158);
-}
-
-.breakdown-positive {
-  color: rgb(165, 245, 158);
-}
