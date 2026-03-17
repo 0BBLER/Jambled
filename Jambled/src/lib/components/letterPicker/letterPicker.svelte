@@ -28,25 +28,30 @@
 </script>
 
 <!-- TODO make red when invalid -->
-<div class="letters-container">
-  {#each alphabet as letter, i}
-    <div class={userMap[letter] == letter ? "letter-changed" : ""}>
-      {letter.toUpperCase()}
-    </div>
-    <div>
-      <span class={userMap[letter] == letter ? "letter-changed" : ""}>⇾</span>
-      <input
-        type="text"
-        oninput={(e) => {
-          changeLetterInput(letter, e);
-        }}
-        onfocus={onFocus}
-        class="letter-input {userMap[letter] == letter ? 'letter-changed' : ''}"
-        value={userMap[letter]?.toUpperCase()}
-        name="letter-input-{letter}"
-      />
-    </div>
-  {/each}
+<div>
+  <div class="letters-container-title">Letter swaps</div>
+  <div class="letters-container">
+    {#each alphabet as letter, i}
+      <div class={userMap[letter] == letter ? "letter-changed" : ""}>
+        {letter.toUpperCase()}
+      </div>
+      <div>
+        <span class={userMap[letter] == letter ? "letter-changed" : ""}>⇾</span>
+        <input
+          type="text"
+          oninput={(e) => {
+            changeLetterInput(letter, e);
+          }}
+          onfocus={onFocus}
+          class="letter-input {userMap[letter] == letter
+            ? 'letter-changed'
+            : ''}"
+          value={userMap[letter]?.toUpperCase()}
+          name="letter-input-{letter}"
+        />
+      </div>
+    {/each}
+  </div>
 </div>
 
 <style>

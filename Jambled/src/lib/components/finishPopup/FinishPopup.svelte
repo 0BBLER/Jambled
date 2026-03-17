@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
 
-  export let game: Game;
+  export let game: Game; //legacy mode
 </script>
 
 <div class="finish-popup-container">
@@ -22,9 +22,11 @@
       <span class="score-negative"
         >{game.titleGuesses * game.scoringRules.title}</span
       >
-      from {game.titleGuesses} title guess{game.titleGuesses == 1 ? "" : "es"}
+      from {game.titleGuesses} incorrect title guess{game.titleGuesses == 1 ? "" : "es"}
     </div>
-    <div><span class="score-positive">+{game.scoringRules.win}</span> from 1 win</div>
+    <div>
+      <span class="score-positive">+{game.scoringRules.win}</span> from 1 win
+    </div>
   </div>
 </div>
 

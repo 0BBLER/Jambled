@@ -5,6 +5,7 @@
   grid-template-columns: min-content max-content;
   font-size: 1.3em;
   justify-self: center;
+  text-align: center;
 }
 
 .letter-input {
@@ -17,8 +18,14 @@
   font-size: inherit;
   transform: translateY(0px);
   font-family: inherit;
+  text-align: center;
 }
 
 .letter-changed {
   opacity: 0.5;
+}
+
+.letters-container-title {
+  text-align: center;
+  text-decoration: underline;
 }

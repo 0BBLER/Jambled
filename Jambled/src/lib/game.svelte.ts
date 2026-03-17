@@ -10,6 +10,7 @@ export class Game {
   charGuesses = $state(0);
   titleGuesses = $state(0);
   done = $state(false);
+  score = $state(0);
   previousScore = 0;
 
   scoringRules = {
@@ -18,10 +19,9 @@ export class Game {
     win: 10000,
   } as const;
 
-  score = $state(0);
 
   constructor() {
-    this.charManager = new CharManager();
+    this.charManager = new CharManager(this);
     this.articleTitle = "";
     this.done = false;
     this.updateScore(false);
@@ -55,7 +55,6 @@ export class Game {
   }
 
   guessTitle(guess: string) {
-    this.titleGuesses = this.titleGuesses + 1;
     const compare =
       guess.localeCompare(this.articleTitle, "en", {
         sensitivity: "base",
@@ -67,8 +66,10 @@ export class Game {
         fade: true,
       });
       this.done = true;
+    } else {
+      this.titleGuesses = this.titleGuesses + 1;
+      this.updateScore(true);
     }
-    this.updateScore(true);
   }
 
   modUserMap(from: Letter, to: Letter) {

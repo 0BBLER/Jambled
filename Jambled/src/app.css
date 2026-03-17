@@ -1,17 +1,75 @@
 /* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
  */
 @import url("https://fonts.googleapis.com/css2?family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
+button {
+  background-color: rgb(56, 56, 56);
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  transition:
+    background-color 200ms ease-in-out,
+    outline 200ms ease-in-out;
+  cursor: pointer;
+  box-sizing: border-box;
+  outline: 2px solid rgb(56, 56, 56);
+}
+
+button:hover {
+  background-color: rgb(60, 60, 60);
+  outline: 2px solid rgb(167, 167, 167);
+}
+
 .hidden {
   visibility: hidden;
+  display: none !important;
 }
-.main-container.dark {
+.title-screen {
+  font-family: "Sansation", sans-serif;
+  color: rgb(204, 204, 204);
   background-color: rgb(36, 36, 36);
+  display: flex;
+  place-items: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 12px;
+}
+.main-title {
+  font-size: 12em;
+  text-align: center;
+  margin: 30px;
+}
+.big-button {
+  font-size: 4.5em;
+  padding: 10px 20px;
+  border-radius: 7px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.how-button {
+  font-size: 2em;
+}
+
+.play-info {
+  font-size: 2em;
+  max-width: 600px;
+  overflow: hidden;
+  height: 0;
+  transition: height 500ms ease-in-out;
+  text-align: center;
+}
+
+.play-info.expanded {
+  height: 200px;
 }
 
 #game {
   font-family: "Sansation", sans-serif;
   line-height: 1.6;
-  padding: 16px;
+  padding: 16px 16px 8px 16px;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -41,15 +99,18 @@
 
 .toast-message {
   position: fixed;
-  top: 30px;
-  right: -100px;
-  font-size: 2em;
-  transition: 500ms ease-in-out;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -4em;
+  font-size: 3em;
   opacity: 0;
+  font-weight: bolder;
+  text-shadow: 0 0 7px black;
+  transition: 500ms ease-in-out;
 }
 
 .toast-message.active {
-  right: 30px;
+  top: 70px;
   opacity: 1;
 }
 
@@ -59,4 +120,5 @@
   flex: 1 1 auto;
   height: 100%;
   min-height: 0;
+  border-left: 1px solid rgb(112, 112, 112);
 }

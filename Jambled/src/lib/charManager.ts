@@ -1,3 +1,4 @@
+import { Game } from "./game.svelte";
 import { shuffleArr } from "./utils";
 
 //prettier-ignore
@@ -7,11 +8,13 @@ export class CharManager {
   mapKey: Record<Letter, Letter>;
   userMap: Record<Letter, Letter>;
   masterMap: Record<Letter, Letter>;
+  game: Game;
 
-  constructor() {
+  constructor(game: Game) {
     this.mapKey = {};
     this.userMap = {};
     this.masterMap = {};
+    this.game = game;
   }
 
   //get a shuffled map
@@ -34,6 +37,7 @@ export class CharManager {
 
   //get a word shuffled to the current mix
   getShuffled(string: string) {
+    if(this.game.done) return string;
     if (Object.values(this.masterMap).length < 1) return string;
     return string
       .split("")

@@ -7,9 +7,10 @@
   interface Props {
     charManager: CharManager;
     game: Game;
+    done: boolean;
   }
 
-  let { charManager, game }: Props = $props();
+  let { charManager, game, done }: Props = $props();
 
   let articleDiv = $state<HTMLDivElement>();
   let articleTitle = $state<string>();
@@ -101,6 +102,12 @@
 
     articleTitleShuffled = charManager.getShuffled(articleTitle);
   }
+
+  $effect(() => {
+    if (done) {
+      updateCharacters();
+    }
+  });
 </script>
 
 <div class={`article-preview ${articleLoaded ? "" : "hidden"}`}>
