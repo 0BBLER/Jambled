@@ -1,0 +1,33 @@
+.finish-popup-container {
+  height: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(24, 24, 24);
+  position: fixed;
+  text-align: center;
+  padding: 8px 80px;
+}
+
+.you-got-it {
+  font-size: 2em;
+  color: rgb(146, 224, 131);
+}
+
+.finish-score {
+  font-size: 5em;
+  line-height: 1em;
+  font-weight: bold;
+}
+
+.score-breakdown {
+  color: rgb(230, 230, 230);
+}
+
+.breakdown-negative {
+  color: rgb(245, 158, 158);
+}
+
+.breakdown-positive {
+  color: rgb(165, 245, 158);
+}

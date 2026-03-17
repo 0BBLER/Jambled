@@ -2,12 +2,14 @@
   import { CharManager } from "$lib/charManager";
   import { getArticleData } from "$lib/wiki";
   import { userConfig } from "$lib/store";
+  import { Game } from "$lib/game.svelte";
 
   interface Props {
     charManager: CharManager;
+    game: Game;
   }
 
-  let { charManager }: Props = $props();
+  let { charManager, game }: Props = $props();
 
   let articleDiv = $state<HTMLDivElement>();
   let articleTitle = $state<string>();
@@ -22,6 +24,9 @@
     const articleData = await getArticleData();
     articleTitle = "";
     articleTitle = articleData.title;
+    if (articleTitle) {
+      game.articleTitle = articleTitle;
+    }
     articleTitleShuffled = charManager.getShuffled(articleData.title);
     articleDiv.innerHTML = articleData.text["*"];
     cleanArticle();

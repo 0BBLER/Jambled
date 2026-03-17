@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { CharManager, type Letter } from "$lib/charManager";
-  import { getArticleData } from "$lib/wiki";
+  import { type Letter } from "$lib/charManager";
+  import ArticleViewer from "$lib/components/articleViewer/ArticleViewer.svelte";
+  import FinishPopup from "$lib/components/finishPopup/FinishPopup.svelte";
+  import GuessInput from "$lib/components/guessInput/GuessInput.svelte";
+  import LetterPicker from "$lib/components/letterPicker/LetterPicker.svelte";
+  import { Game } from "$lib/game.svelte";
   import { userConfig } from "$lib/store";
-  import ArticleViewer from "$lib/components/articleViewer/articleViewer.svelte";
-  import LetterPicker from "$lib/components/letterPicker/letterPicker.svelte";
-  import { Game } from "$lib/game";
 
   let articleViewer = $state<ArticleViewer>();
 
-  let game = $state<Game>(new Game());
+  let game = new Game();
   let reactiveUserMap = $state<Record<Letter, Letter>>({
     ...game.charManager.userMap,
   });
@@ -24,11 +25,14 @@
     }
   }
 
-  function setLetterCallback(from: string, to: string) {
-    if (game.charManager.setUserMap(from, to)) {
+  function setLetterCallback(from: Letter, to: Letter): boolean {
+    const success = game.modUserMap(from, to);
+    if (success) {
       reactiveUserMap[from] = to;
       articleViewer?.updateCharacters();
     }
+
+    return success;
   }
 </script>
 
@@ -40,7 +44,14 @@
       {setLetterCallback}
       charManager={game.charManager}
     ></LetterPicker>
-    <ArticleViewer charManager={game.charManager} bind:this={articleViewer}
+    <ArticleViewer
+      {game}
+      charManager={game.charManager}
+      bind:this={articleViewer}
     ></ArticleViewer>
+    <GuessInput {game}></GuessInput>
+    {#if game.done}
+      <FinishPopup {game}></FinishPopup>
+    {/if}
   </div>
 </div>

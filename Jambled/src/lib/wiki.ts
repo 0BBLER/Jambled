@@ -28,7 +28,8 @@ async function getRandomWikiArticle() {
     .toSorted((a, b) => b.length - a.length)
     .slice(0, 5);
 
-  return filtered[Math.floor(Math.random() * (filtered.length + 1))];
+  console.log(filtered);
+  return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
 export async function getArticleData() {

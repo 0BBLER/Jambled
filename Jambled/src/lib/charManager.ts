@@ -69,11 +69,12 @@ export class CharManager {
     return true;
   }
 
-  setUserMap(from: string, to: string) {
+  modUserMap(from: string, to: string) {
     if (!alphabet.includes(from) || !alphabet.includes(to)) {
       console.error("KEY DOES NOT EXIST");
       return false;
     }
+    if (this.userMap[from] == to) return false;
     this.userMap[from] = to;
     return this.generateMasterMap();
   }

@@ -1,0 +1,23 @@
+.guess-input-container {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  display: flex;
+  background-color: rgba(29, 29, 29, 0.911);
+  border-radius: 10px 10px 0 0;
+  padding: 4px;
+}
+
+.guess-input {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: inherit;
+  font-size: 2em;
+  text-align: center;
+  border-bottom: 3px solid rgba(228, 228, 228, 0.89);
+  font-family: inherit;
+  field-sizing: content;
+  min-width: 100px;
+}

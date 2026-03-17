@@ -1,11 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
-
+/* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+ */@import url("https://fonts.googleapis.com/css2?family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap");
 .hidden {
   visibility: hidden;
 }
 
 .main-container {
-
 }
 
 .main-container.dark {
@@ -13,7 +12,7 @@
 }
 
 #game {
-  font-family: "Noto Sans", sans-serif;
+  font-family: "Sansation", sans-serif;
   line-height: 1.6;
   padding: 16px;
   display: flex;
@@ -22,7 +21,6 @@
 #game.dark {
   color: rgb(204, 204, 204);
   background-color: rgb(36, 36, 36);
-
 }
 
 #game.dark a {
