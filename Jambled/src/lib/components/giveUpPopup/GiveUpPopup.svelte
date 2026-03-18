@@ -1,3 +1,4 @@
+<!-- prompt appearing when you press give up -->
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
   import Modal from "../modal/Modal.svelte";

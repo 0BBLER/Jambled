@@ -1,3 +1,5 @@
+<!-- article viewing pane -->
+<!-- also handles cleaning the article for rendering and hiding contents -->
 <script lang="ts">
   import { alphabet, CharManager } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
@@ -57,6 +59,7 @@
     removeBySelector(".noprint"); //citation needed
     removeBySelector(".external"); //links
 
+    //very bottom things
     removeBySelector("#Notes");
     removeBySelector("#References");
     removeBySelector("#Further_reading");
@@ -67,14 +70,27 @@
       element.title = "";
     });
 
+    //abbreviations contain a title for the actual meaning
     articleDiv.querySelectorAll("abbr").forEach((element) => {
       element.title = "";
     });
 
+    //this is mostly for the phonetic spellings
+    articleDiv.querySelectorAll("span").forEach((element) => {
+      element.title = "";
+    });
+
+    //remove audios
     articleDiv.querySelectorAll("audio").forEach((element) => {
       element.remove();
     });
 
+    //remove videos
+    articleDiv.querySelectorAll("video").forEach((element) => {
+      element.remove();
+    });
+
+    //sometimes the tables are prestyled
     articleDiv.querySelectorAll("th").forEach((element) => {
       element.classList.add("override-table-content");
     });
@@ -83,10 +99,7 @@
       element.classList.add("override-table-content");
     });
 
-    articleDiv.querySelectorAll("video").forEach((element) => {
-      element.remove();
-    });
-
+    //black out images
     articleDiv.querySelectorAll("img").forEach((element) => {
       element.classList.add("image-hidden");
       element.alt = "";
@@ -94,6 +107,11 @@
       element.oncontextmenu = (e) => {
         e.preventDefault();
       };
+      //put image in wrapper
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("image-hidden-wrapper");
+      element.after(wrapper);
+      wrapper.appendChild(element);
     });
 
     const walker = document.createTreeWalker(
@@ -102,19 +120,20 @@
       null,
     );
     let current = walker.nextNode();
-    const map: Record<string, number> = {};
+    const freqMap: Record<string, number> = {};
     let chars = 0;
     while (current) {
       if (current.nodeValue) {
+        //add all nodes to arr so they can be easily changed later
         textNodes.push({ node: current, origValue: current.nodeValue });
         for (let i = 0; i < current.nodeValue.length; i++) {
           const lower = current.nodeValue[i].toLowerCase();
           if (alphabet.includes(lower)) {
             chars++;
-            if (map[lower] == undefined) {
-              map[lower] = 0;
+            if (freqMap[lower] == undefined) {
+              freqMap[lower] = 0;
             }
-            map[lower]++;
+            freqMap[lower]++;
           }
         }
         current.nodeValue = charManager.getShuffled(current.nodeValue);
@@ -122,9 +141,10 @@
       current = walker.nextNode();
     }
 
-    charManager.setValueMap(map, chars);
+    charManager.setValueMap(freqMap, chars);
   }
 
+  //update all the characters in the article
   export function updateCharacters() {
     if (!articleTitle) return;
 

@@ -1,3 +1,6 @@
+<!-- prompt appearing when you finish the game -->
+<!-- triggers on win and give up -->
+<!-- contains information about the game -->
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
   import { formatTime } from "$lib/utils";
@@ -15,11 +18,13 @@
 </script>
 
 <Modal bind:this={modal} classes="finish-popup-container">
+  <!-- title -->
   {#if game.wonGame}
     <div class="you-got-it">You got it!</div>
   {:else}
     <div class="you-gave-up">You gave up!</div>
   {/if}
+  <!-- score/time -->
   {#if game.currentMode == "classic"}
     <div>Your score:</div>
     <div class="finish-score">{game.score}</div>
@@ -27,13 +32,15 @@
     <div>Your time:</div>
     <div class="finish-score">{formatTime(game.elapsedTime)}</div>
   {/if}
-
+  <!-- new highscore -->
   {#if game.newHighscore}
     <div class="new-highscore">That's a new highscore!</div>
   {/if}
+  <!-- special message -->
   {#if game.wonGame}
     <div>You're a <b>wikimaster</b>!</div>
   {/if}
+  <!-- only include score breakdown for classic -->
   {#if game.currentMode == "classic"}
     <div class="score-breakdown-header">Breakdown</div>
     <div class="score-breakdown">

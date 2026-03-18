@@ -26,6 +26,7 @@ export class Game {
   scoringRules = {
     title: -1000,
     win: 10000,
+    charAdditive: -10,
   } as const;
 
   constructor() {
@@ -157,10 +158,13 @@ export class Game {
   }
 
   get charsCost() {
-    const cost = this.guessedChars.reduce(
-      (acc, curr) => acc - this.charManager.valueMap[curr],
-      0,
-    );
+    let charIdx = 0;
+    const cost = this.guessedChars.reduce((acc, curr) => {
+      let val = acc - this.charManager.valueMap[curr];
+      val += this.scoringRules.charAdditive * charIdx;
+      charIdx++;
+      return val;
+    }, 0);
     return Math.floor(cost);
   }
 }
