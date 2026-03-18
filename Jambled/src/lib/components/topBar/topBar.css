@@ -28,12 +28,6 @@
   border-right: 3px solid rgba(199, 199, 199, 0.575);
 }
 
-.top-score {
-  font-size: inherit;
-  font-weight: bold;
-  margin-left: 10px;
-}
-
 .guess-input {
   background-color: transparent;
   outline: none;
@@ -50,4 +44,21 @@
 .new-game {
   font-size: inherit;
   color: rgb(147, 216, 158);
+}
+
+.score-info {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px
+}
+
+.top-score {
+  font-size: inherit;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.best-score {
+  font-size: 0.5em;
 }

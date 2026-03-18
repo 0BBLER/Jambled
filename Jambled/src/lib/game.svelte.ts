@@ -1,6 +1,7 @@
 import confetti from "@hiseb/confetti";
 import { CharManager, Letter } from "./charManager";
 import { ToastManager } from "./toastManager";
+import { trySetHighscore } from "./store";
 
 export class Game {
   toastManager: ToastManager = new ToastManager();
@@ -14,6 +15,7 @@ export class Game {
   score = $state(0);
   previousScore = 0;
   guessedChars = $state<Letter[]>([]);
+  newHighscore = $state(false);
 
   scoringRules = {
     title: -1000,
@@ -29,7 +31,7 @@ export class Game {
 
   updateScore(toast: boolean) {
     this.score =
-      ((this.done && !this.wonGame) ? 0 : this.scoringRules.win) +
+      (this.done && !this.wonGame ? 0 : this.scoringRules.win) +
       this.charsCost +
       this.titleGuesses * this.scoringRules.title;
     if (toast && this.score != this.previousScore) {
@@ -69,6 +71,8 @@ export class Game {
       });
       this.wonGame = true;
       this.done = true;
+      this.updateScore(true);
+      this.newHighscore = trySetHighscore(this.score);
     } else {
       this.titleGuesses = this.titleGuesses + 1;
       this.updateScore(true);
@@ -99,6 +103,7 @@ export class Game {
     this.wonGame = false;
     this.done = true;
     this.updateScore(true);
+    this.newHighscore = trySetHighscore(this.score);
   }
 
   get charsCost() {

@@ -8,7 +8,7 @@
 }
 
 .you-gave-up {
-    font-size: 2em;
+  font-size: 2em;
   color: rgb(231, 99, 99);
 }
 
@@ -18,6 +18,17 @@
   font-weight: bold;
 }
 
+.score-breakdown-header {
+  border-top: 2px solid rgba(200, 200, 200, 0.521);
+}
+
 .score-breakdown {
   color: rgb(230, 230, 230);
+}
+
+.new-highscore {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: rgb(250, 246, 17);
+  text-shadow: 0 0 3px rgb(247, 246, 189);
 }

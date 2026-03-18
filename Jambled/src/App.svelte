@@ -24,6 +24,7 @@
       game.start();
       articleViewer.loadData();
 
+      reactiveUserMap = {};
       reactiveUserMap = {
         ...game.charManager.userMap,
       };
@@ -77,6 +78,7 @@
     ></TopBar>
     <div class="midsection">
       <LetterPicker
+        {game}
         userMap={reactiveUserMap}
         {setLetterCallback}
         charManager={game.charManager}

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { alphabet, CharManager } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
-  import { userConfig } from "$lib/store";
+  import { articleLoaded, userConfig } from "$lib/store";
   import { getArticleData } from "$lib/wiki";
 
   interface Props {
@@ -14,7 +14,6 @@
 
   let articleDiv = $state<HTMLDivElement>();
   let articleTitle = $state<string>();
-  let articleLoaded = $state<boolean>(false);
   let articleTitleShuffled = $state<string>();
 
   let textNodes: { node: Node; origValue: string }[] = [];
@@ -22,7 +21,7 @@
   //fetch article contents and set article container div
   export async function loadData() {
     if (!articleDiv) return;
-    articleLoaded = false;
+    articleLoaded.set(false);
     const articleData = await getArticleData();
     articleTitle = "";
     articleTitle = articleData.title;
@@ -32,7 +31,7 @@
     articleTitleShuffled = charManager.getShuffled(articleData.title);
     articleDiv.innerHTML = articleData.text["*"];
     cleanArticle();
-    articleLoaded = true;
+    articleLoaded.set(true);
   }
 
   //remove elements from articleDiv by selector
@@ -72,7 +71,11 @@
     });
 
     articleDiv.querySelectorAll("th").forEach((element) => {
-      element.classList.add("override-th")
+      element.classList.add("override-table-content");
+    });
+
+    articleDiv.querySelectorAll("tr").forEach((element) => {
+      element.classList.add("override-table-content");
     });
 
     articleDiv.querySelectorAll("video").forEach((element) => {
@@ -141,7 +144,7 @@
   });
 </script>
 
-<div class={articleLoaded ? "article-preview" : "hidden"}>
+<div class={$articleLoaded ? "article-preview" : "hidden"}>
   <h1>{articleTitleShuffled}</h1>
   <hr />
   <div
@@ -150,7 +153,7 @@
     class={`${userConfig.darkMode ? "dark" : ""}`}
   ></div>
 </div>
-<div class={articleLoaded ? "hidden" : "article-loading"}>
+<div class={$articleLoaded ? "hidden" : "article-loading"}>
   Loading your article...
 </div>
 

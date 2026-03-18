@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
+  import { highscore } from "$lib/store";
 
   interface Props {
     score: number;
@@ -8,7 +9,8 @@
     newGameCallback: () => void;
     gameDone: boolean;
   }
-  let { score, game, giveUpCallback, newGameCallback, gameDone }: Props = $props();
+  let { score, game, giveUpCallback, newGameCallback, gameDone }: Props =
+    $props();
 
   let inputElement = $state<HTMLInputElement>();
 
@@ -42,7 +44,12 @@
     {#if gameDone}
       <button class="new-game" onclick={newGameCallback}>New game</button>
     {/if}
-    <div class="top-score">Score: {score}</div>
+    <div class="score-info">
+      <div class="top-score">Score: {score}</div>
+      <div class="best-score">
+        {$highscore != undefined ? `Best: ${$highscore}` : "No personal best"}
+      </div>
+    </div>
   </div>
 </div>
 

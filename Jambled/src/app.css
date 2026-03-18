@@ -132,7 +132,7 @@ button:hover {
   min-height: 0;
 }
 
-.override-th {
+.override-table-content {
   background-color: rgba(109, 109, 109, 0.185) !important;
   color: rgb(204, 204, 204) !important;
 }

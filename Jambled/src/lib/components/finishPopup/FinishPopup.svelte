@@ -21,10 +21,13 @@
   {/if}
   <div>Your score:</div>
   <div class="finish-score">{game.score}</div>
+  {#if game.newHighscore}
+    <div class="new-highscore">That's a new highscore!</div>
+  {/if}
   {#if game.wonGame}
     <div>You're a <b>wikimaster</b>!</div>
   {/if}
-  <div>Breakdown</div>
+  <div class="score-breakdown-header">Breakdown</div>
   <div class="score-breakdown">
     <div>
       <span class="score-negative">{game.charsCost}</span>
