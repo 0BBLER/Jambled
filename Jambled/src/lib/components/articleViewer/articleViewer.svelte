@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CharManager } from "$lib/charManager";
+  import { alphabet, CharManager } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
   import { userConfig } from "$lib/store";
   import { getArticleData } from "$lib/wiki";
@@ -22,6 +22,7 @@
   //fetch article contents and set article container div
   export async function loadData() {
     if (!articleDiv) return;
+    articleLoaded = false;
     const articleData = await getArticleData();
     articleTitle = "";
     articleTitle = articleData.title;
@@ -45,13 +46,17 @@
   //clean the article by removing a bunch of things
   function cleanArticle() {
     if (!articleDiv) return;
+    //bottom things
     removeBySelector(".reference");
     removeBySelector(".mw-editsection");
     removeBySelector(".navbox");
-    removeBySelector(".metadata");
     removeBySelector(".references");
-    removeBySelector(".hatnote");
+    //not bottom things
+    removeBySelector(".metadata");
+    removeBySelector(".hatnote"); //top information
     removeBySelector(".infobox-title");
+    removeBySelector(".noprint"); //citation needed
+    removeBySelector(".external"); //links
 
     removeBySelector("#Notes");
     removeBySelector("#References");
@@ -85,17 +90,32 @@
       null,
     );
     let current = walker.nextNode();
+    const map: Record<string, number> = {};
+    let chars = 0;
     while (current) {
       if (current.nodeValue) {
         textNodes.push({ node: current, origValue: current.nodeValue });
+        for (let i = 0; i < current.nodeValue.length; i++) {
+          const lower = current.nodeValue[i].toLowerCase();
+          if (alphabet.includes(lower)) {
+            chars++;
+            if (map[lower] == undefined) {
+              map[lower] = 0;
+            }
+            map[lower]++;
+          }
+        }
         current.nodeValue = charManager.getShuffled(current.nodeValue);
       }
       current = walker.nextNode();
     }
+
+    charManager.setValueMap(map, chars);
   }
 
   export function updateCharacters() {
     if (!articleTitle) return;
+
     textNodes.forEach((tn) => {
       tn.node.nodeValue = charManager.getShuffled(tn.origValue);
     });
@@ -106,11 +126,18 @@
   $effect(() => {
     if (done) {
       updateCharacters();
+      if (articleDiv) {
+        articleDiv.querySelectorAll("img").forEach((element) => {
+          element.classList.remove("image-hidden");
+          element.draggable = true;
+          element.oncontextmenu = (e) => {};
+        });
+      }
     }
   });
 </script>
 
-<div class={`article-preview ${articleLoaded ? "" : "hidden"}`}>
+<div class={articleLoaded ? "article-preview" : "hidden"}>
   <h1>{articleTitleShuffled}</h1>
   <hr />
   <div
@@ -118,6 +145,9 @@
     id={`article`}
     class={`${userConfig.darkMode ? "dark" : ""}`}
   ></div>
+</div>
+<div class={articleLoaded ? "hidden" : "article-loading"}>
+  Loading your article...
 </div>
 
 <style>

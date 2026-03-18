@@ -1,8 +1,7 @@
 .article-preview {
-  border-left: 1px solid rgb(112, 112, 112);
   padding: 16px;
   box-sizing: border-box;
-  overflow-y: auto; 
+  overflow-y: auto;
   height: 100%;
 }
 
@@ -29,4 +28,9 @@
 .image-hidden {
   filter: brightness(0%);
   cursor: not-allowed;
+}
+
+.article-loading {
+  font-size: 2rem;
+  padding-left: 10px;
 }

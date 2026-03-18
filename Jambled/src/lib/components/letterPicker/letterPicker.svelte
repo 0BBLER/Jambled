@@ -28,7 +28,7 @@
 </script>
 
 <!-- TODO make red when invalid -->
-<div>
+<div class="letters-full-container">
   <div class="letters-container-title">Letter swaps</div>
   <div class="letters-container">
     {#each alphabet as letter, i}

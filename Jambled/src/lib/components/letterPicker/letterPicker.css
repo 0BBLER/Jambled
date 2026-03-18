@@ -8,6 +8,11 @@
   text-align: center;
 }
 
+.letters-full-container {
+  border-left: 1px solid rgb(112, 112, 112);
+  border-right: 1px solid rgb(112, 112, 112);
+}
+
 .letter-input {
   background-color: transparent;
   border: none;
@@ -19,6 +24,7 @@
   transform: translateY(0px);
   font-family: inherit;
   text-align: center;
+  cursor: pointer;
 }
 
 .letter-changed {

@@ -28,7 +28,6 @@ async function getRandomWikiArticle() {
     .toSorted((a, b) => b.length - a.length)
     .slice(0, 5);
 
-  console.log(filtered);
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
@@ -36,6 +35,7 @@ export async function getArticleData() {
   //TODO fix if somehow an article was not found
   //maybe use preset
   const randomTitle = (await getRandomWikiArticle()).title;
+  console.log(randomTitle);
   const data = await fetch(
     `https://en.wikipedia.org/w/api.php?action=parse&page=${randomTitle}&prop=text&format=json&origin=*`,
   );

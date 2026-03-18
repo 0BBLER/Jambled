@@ -2,6 +2,7 @@
   import { type Letter } from "$lib/charManager";
   import ArticleViewer from "$lib/components/articleViewer/ArticleViewer.svelte";
   import FinishPopup from "$lib/components/finishPopup/FinishPopup.svelte";
+  import GiveUpPopup from "$lib/components/giveUpPopup/GiveUpPopup.svelte";
   import LetterPicker from "$lib/components/letterPicker/LetterPicker.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
   import { Game } from "$lib/game.svelte";
@@ -15,6 +16,8 @@
   });
   let showTitleScreen = $state(true);
   let instructionsToggled = $state(false);
+  let finishPopup = $state<FinishPopup>();
+  let giveUpPopup = $state<GiveUpPopup>();
 
   function start() {
     if (articleViewer) {
@@ -43,6 +46,21 @@
     showTitleScreen = false;
     start();
   }
+
+  function giveUpButtonPressed() {
+    if (!giveUpPopup) return;
+    giveUpPopup.getModal()?.open();
+  }
+
+  function giveUp() {
+    game.giveUp();
+  }
+
+  $effect(() => {
+    if (finishPopup && game.done) {
+      finishPopup.getModal()?.open();
+    }
+  });
 </script>
 
 <!-- main game screen -->
@@ -50,8 +68,8 @@
   class="{showTitleScreen ? 'hidden' : ''} {userConfig.darkMode ? 'dark' : ''}"
 >
   <div id="game" class={userConfig.darkMode ? "dark" : ""}>
-    <button onclick={start}>Start</button>
-    <TopBar {game} score={game.score}></TopBar>
+    <TopBar giveUpCallback={giveUpButtonPressed} {game} score={game.score}
+    ></TopBar>
     <div class="midsection">
       <LetterPicker
         userMap={reactiveUserMap}
@@ -66,9 +84,9 @@
       ></ArticleViewer>
     </div>
     <!-- fixed popup -->
-    {#if game.done}
-      <FinishPopup {game}></FinishPopup>
-    {/if}
+    <FinishPopup bind:this={finishPopup} {game}></FinishPopup>
+    <GiveUpPopup giveUpCallback={giveUp} bind:this={giveUpPopup} {game}
+    ></GiveUpPopup>
   </div>
 </div>
 <!-- title screen/main menu -->
@@ -82,8 +100,10 @@
     }}>How to play</button
   >
   <div class="play-info {instructionsToggled ? 'expanded' : ''}">
-    All the letters in a Wikipedia page have been swapped around! Unswap the
-    letters and try to correctly guess the original title. Do it in as few swaps
-    as possible
+    All the letters in a Wikipedia page have been <span class="important"
+      >JAMBLED</span
+    >, and you need to correctly guess the original title!<br /> You can
+    <span class="important">UNJAMBLE</span> letters using the left panel, but it'll
+    cost you, and frequent letters are more expensive.
   </div>
 </div>

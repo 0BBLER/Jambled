@@ -8,12 +8,14 @@ export class CharManager {
   mapKey: Record<Letter, Letter>;
   userMap: Record<Letter, Letter>;
   masterMap: Record<Letter, Letter>;
+  valueMap: Record<Letter, number>;
   game: Game;
 
   constructor(game: Game) {
     this.mapKey = {};
     this.userMap = {};
     this.masterMap = {};
+    this.valueMap = {};
     this.game = game;
   }
 
@@ -37,7 +39,7 @@ export class CharManager {
 
   //get a word shuffled to the current mix
   getShuffled(string: string) {
-    if(this.game.done) return string;
+    if (this.game.done) return string;
     if (Object.values(this.masterMap).length < 1) return string;
     return string
       .split("")
@@ -81,6 +83,12 @@ export class CharManager {
     if (this.userMap[from] == to) return false;
     this.userMap[from] = to;
     return this.generateMasterMap();
+  }
+
+  setValueMap(map: Record<string, number>, charCount: number) {
+    for (const [key, value] of Object.entries(map)) {
+      this.valueMap[key] = (value / charCount) * 5000;
+    }
   }
 
   //init

@@ -1,0 +1,18 @@
+.give-up-popup-container {
+  text-align: center;
+}
+
+.give-up-buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.confirm-give-up {
+  font-size: 2em;
+}
+
+.big-button {
+  font-size: 3em;
+}
