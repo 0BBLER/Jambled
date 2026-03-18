@@ -4,6 +4,7 @@
   import FinishPopup from "$lib/components/finishPopup/FinishPopup.svelte";
   import GiveUpPopup from "$lib/components/giveUpPopup/GiveUpPopup.svelte";
   import LetterPicker from "$lib/components/letterPicker/LetterPicker.svelte";
+  import Title from "$lib/components/title/Title.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
   import { Game } from "$lib/game.svelte";
   import { userConfig } from "$lib/store";
@@ -98,19 +99,20 @@
 </div>
 <!-- title screen/main menu -->
 <div class="title-screen {showTitleScreen ? '' : 'hidden'}">
-  <div class="main-title">JAMBLED</div>
-  <button class="big-button" onclick={playButtonPressed}>Play</button>
+  <Title></Title>
+  <div style="height: 300px"></div>
+  <button class="z-up big-button play-button" onclick={playButtonPressed}>Play</button>
   <button
-    class="big-button how-button"
+    class="z-up big-button how-button"
     onclick={() => {
       instructionsToggled = !instructionsToggled;
     }}>How to play</button
   >
-  <div class="play-info {instructionsToggled ? 'expanded' : ''}">
+  <div class="z-up play-info {instructionsToggled ? 'expanded' : ''}">
     All the letters in a Wikipedia page have been <span class="important"
       >JAMBLED</span
     >, and you need to correctly guess the original title!<br /> You can
     <span class="important">UNJAMBLE</span> letters using the left panel, but it'll
-    cost you, and frequent letters are more expensive.
+    cost you, and frequently used letters are more expensive.
   </div>
 </div>

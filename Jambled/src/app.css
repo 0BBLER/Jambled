@@ -38,11 +38,6 @@ button:hover {
   height: 100vh;
   gap: 12px;
 }
-.main-title {
-  font-size: 12em;
-  text-align: center;
-  margin: 30px;
-}
 .big-button {
   font-size: 4.5em;
   padding: 10px 20px;
@@ -52,7 +47,12 @@ button:hover {
 }
 
 .how-button {
-  font-size: 2em;
+  font-size: 2rem !important;
+  box-shadow: 0 0 20px white;
+}
+
+.play-button {
+  box-shadow: 0 0 20px white;
 }
 
 .play-info {
@@ -136,4 +136,8 @@ button:hover {
 .override-table-content {
   background-color: rgba(109, 109, 109, 0.185) !important;
   color: rgb(204, 204, 204) !important;
+}
+
+.z-up {
+  z-index: 3;
 }
