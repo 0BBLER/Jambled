@@ -7,7 +7,7 @@
   import Title from "$lib/components/title/Title.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
   import { Game } from "$lib/game.svelte";
-  import { userConfig } from "$lib/store";
+  import { userConfig } from "$lib/store.svelte";
 
   let articleViewer = $state<ArticleViewer>();
 
@@ -19,10 +19,16 @@
   let instructionsToggled = $state(false);
   let finishPopup = $state<FinishPopup>();
   let giveUpPopup = $state<GiveUpPopup>();
+  type ModeButtonType = " timer " | " extension ";
+  let selectedMode = $state<GameMode>("classic");
+
+  let modeIcon = $derived<ModeButtonType>(
+    selectedMode == "classic" ? " extension " : " timer ",
+  );
 
   function start() {
     if (articleViewer) {
-      game.start();
+      game.start(selectedMode);
       articleViewer.loadData();
 
       reactiveUserMap = {};
@@ -58,12 +64,27 @@
     game.giveUp();
   }
 
+  function switchGameMode() {
+    if (selectedMode == "classic") {
+      selectedMode = "speedrun";
+    } else {
+      selectedMode = "classic";
+    }
+  }
+
   $effect(() => {
     if (finishPopup && game.done) {
       finishPopup.getModal()?.open();
     }
   });
 </script>
+
+<svelte:head>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=extension,timer"
+  />
+</svelte:head>
 
 <!-- main game screen -->
 <div
@@ -101,7 +122,15 @@
 <div class="title-screen {showTitleScreen ? '' : 'hidden'}">
   <Title></Title>
   <div style="height: 300px"></div>
-  <button class="z-up big-button play-button" onclick={playButtonPressed}>Play</button>
+  <div class="z-up play-buttons-container">
+    <button class="big-button mode-button" onclick={switchGameMode}
+      ><div class="material-symbols-outlined mode-icon">{modeIcon}</div>
+      <div class="mode-hint">{selectedMode}</div></button
+    >
+    <button class="big-button play-button" onclick={playButtonPressed}
+      >Play</button
+    >
+  </div>
   <button
     class="z-up big-button how-button"
     onclick={() => {
@@ -109,10 +138,19 @@
     }}>How to play</button
   >
   <div class="z-up play-info {instructionsToggled ? 'expanded' : ''}">
-    All the letters in a Wikipedia page have been <span class="important"
-      >JAMBLED</span
-    >, and you need to correctly guess the original title!<br /> You can
-    <span class="important">UNJAMBLE</span> letters using the left panel, but it'll
-    cost you, and frequently used letters are more expensive.
+    {#if selectedMode == "classic"}
+      All the letters in a Wikipedia page have been <span class="important"
+        >JAMBLED</span
+      >, and you need to correctly guess the original title!<br /> You can
+      <span class="important">UNJAMBLE</span> letters using the left panel, but it'll
+      cost you, and frequently used letters are more expensive.
+    {:else if selectedMode == "speedrun"}
+      All the letters in a Wikipedia page have been <span class="important"
+        >JAMBLED</span
+      >, and you need to correctly guess the original title as
+      <span class="important">fast as possible</span>!<br />
+      <span class="important">UNJAMBLE</span> the letters at no cost by using the
+      left panel.
+    {/if}
   </div>
 </div>

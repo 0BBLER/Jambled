@@ -5,3 +5,8 @@ export function shuffleArr(array: any[]) {
     [array[i], array[k]] = [array[k], array[i]];
   }
 }
+
+export function formatTime(time: number) {
+  const minutes = Math.floor(time / 60000);
+  return `${minutes}:${Math.floor(time % 60000) / 1000}`;
+}

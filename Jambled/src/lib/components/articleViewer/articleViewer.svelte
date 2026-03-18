@@ -1,7 +1,7 @@
 <script lang="ts">
   import { alphabet, CharManager } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
-  import { articleLoaded, userConfig } from "$lib/store";
+  import { articleLoaded, userConfig } from "$lib/store.svelte";
   import { getArticleData } from "$lib/wiki";
 
   interface Props {

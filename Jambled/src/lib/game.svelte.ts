@@ -1,7 +1,7 @@
 import confetti from "@hiseb/confetti";
 import { CharManager, Letter } from "./charManager";
 import { ToastManager } from "./toastManager";
-import { trySetHighscore } from "./store";
+import { articleLoaded, trySetHighscore } from "./store.svelte";
 
 export class Game {
   toastManager: ToastManager = new ToastManager();
@@ -16,6 +16,12 @@ export class Game {
   previousScore = 0;
   guessedChars = $state<Letter[]>([]);
   newHighscore = $state(false);
+  currentMode = $state<GameMode>("classic");
+  startedTimestamp: number;
+  waitingForStart: boolean;
+  endedTimestamp: number;
+
+  elapsedTime = $state(0);
 
   scoringRules = {
     title: -1000,
@@ -27,35 +33,95 @@ export class Game {
     this.articleTitle = "";
     this.done = false;
     this.updateScore(false);
+    this.currentMode = "classic";
+    this.startedTimestamp = -1;
+    this.endedTimestamp = -1;
+    this.waitingForStart = false;
+
+    articleLoaded.subscribe((loaded) => {
+      if (loaded && this.waitingForStart) {
+        this.waitingForStart = false;
+        this.startedTimestamp = Date.now();
+      }
+    });
+
+    this.updateElapsedTime(true);
+  }
+
+  updateElapsedTime(loop: boolean) {
+    if (this.startedTimestamp == -1) {
+      this.elapsedTime = 0;
+    } else if (this.endedTimestamp == -1) {
+      this.elapsedTime = Date.now() - this.startedTimestamp;
+    } else {
+      this.elapsedTime = this.endedTimestamp - this.startedTimestamp;
+    }
+
+    if (loop)
+      requestAnimationFrame(() => {
+        this.updateElapsedTime(true);
+      });
   }
 
   updateScore(toast: boolean) {
-    this.score =
-      (this.done && !this.wonGame ? 0 : this.scoringRules.win) +
-      this.charsCost +
-      this.titleGuesses * this.scoringRules.title;
-    if (toast && this.score != this.previousScore) {
-      const difference = this.score - this.previousScore;
-      const negative = difference < 0;
-      let prefix = negative ? "-" : "+";
-      const message = `${prefix}${Math.abs(difference)}`;
-      this.toastManager.addToast(
-        message,
-        `score-${negative ? "negative" : "positive"}`,
-      );
+    if (this.currentMode == "classic") {
+      this.score =
+        (this.done && !this.wonGame ? 0 : this.scoringRules.win) +
+        this.charsCost +
+        this.titleGuesses * this.scoringRules.title;
+      if (toast && this.score != this.previousScore) {
+        const difference = this.score - this.previousScore;
+        const negative = difference < 0;
+        let prefix = negative ? "-" : "+";
+        const message = `${prefix}${Math.abs(difference)}`;
+        this.toastManager.addToast(
+          message,
+          `score-${negative ? "negative" : "positive"}`,
+        );
+      }
     }
     this.previousScore = this.score;
   }
 
-  start() {
+  start(mode: GameMode) {
+    this.currentMode = mode;
     this.charManager.generate();
     this.articleTitle = "";
     this.done = false;
     this.charGuesses = 0;
     this.titleGuesses = 0;
     this.guessedChars.length = 0;
+    this.startedTimestamp = -1;
+    this.endedTimestamp = -1;
     this.wonGame = false;
     this.updateScore(false);
+    this.waitingForStart = true;
+  }
+
+  private stopGame(win: boolean) {
+    this.wonGame = win;
+    this.done = true;
+    this.updateScore(false);
+    this.endedTimestamp = Date.now();
+    if (this.currentMode == "classic") {
+      this.newHighscore = trySetHighscore(this.score, this.currentMode);
+    } else if (this.currentMode == "speedrun") {
+      if (win)
+        this.newHighscore = trySetHighscore(this.elapsedTime, this.currentMode);
+    }
+  }
+
+  private win() {
+    confetti({
+      position: { x: window.innerWidth / 2, y: 50 },
+      count: 400,
+      fade: false,
+    });
+    this.stopGame(true);
+  }
+
+  giveUp() {
+    this.stopGame(false);
   }
 
   guessTitle(guess: string) {
@@ -64,15 +130,7 @@ export class Game {
         sensitivity: "base",
       }) == 0;
     if (compare) {
-      confetti({
-        position: { x: window.innerWidth / 2, y: 50 },
-        count: 400,
-        fade: false,
-      });
-      this.wonGame = true;
-      this.done = true;
-      this.updateScore(false);
-      this.newHighscore = trySetHighscore(this.score);
+      this.win();
     } else {
       this.titleGuesses = this.titleGuesses + 1;
       this.updateScore(true);
@@ -96,13 +154,6 @@ export class Game {
       this.updateScore(true);
     }
     return success;
-  }
-
-  giveUp() {
-    this.wonGame = false;
-    this.done = true;
-    this.updateScore(true);
-    this.newHighscore = trySetHighscore(this.score);
   }
 
   get charsCost() {
