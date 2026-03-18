@@ -1,3 +1,5 @@
+<!-- this is the bar at the top of the game -->
+<!-- contains title, title input, and score info -->
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
   import { scores } from "$lib/store.svelte";
@@ -27,7 +29,9 @@
 <div class="top-bar">
   <div class="top"></div>
   <div class="bottom">
+  <!-- title -->
     <div class="top-bar-title">Jambled</div>
+    <!-- title input -->
     <input
       type="text"
       bind:this={inputElement}
@@ -39,12 +43,14 @@
       placeholder="Enter title guess here"
       onkeydown={inputKeydown}
     />
+    <!-- give up/new game buttons -->
     {#if !gameDone}
       <button class="give-up" onclick={giveUpCallback}>Give up</button>
     {/if}
     {#if gameDone}
       <button class="new-game" onclick={newGameCallback}>New game</button>
     {/if}
+    <!-- score info -->
     <div class="score-info">
       {#if game.currentMode == "classic"}
         <div class="top-score">
@@ -58,6 +64,7 @@
         </div>
       {/if}
 
+      <!-- highscore info -->
       <div class="best-score">
         {#if game.currentMode == "classic"}
           {$scores != undefined && $scores.classic != -999999

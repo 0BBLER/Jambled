@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
 
-export const userConfig: UserConfig = { darkMode: true };
+export const userConfig: UserConfig = { darkMode: true }; //dark mode is only half implemented so light mode will break things
 
-interface SaveData {
+interface SaveData { //localstorage format
   scores: {
     classic: number;
     speedrun: number;
@@ -20,6 +20,7 @@ if (!saveData.scores) {
 export const scores = writable(saveData.scores);
 export const articleLoaded = writable(false);
 
+//sets vars and updates localstorage on highscore change
 export function trySetHighscore(score: number, mode: GameMode) {
   if (mode == "classic") {
     if (

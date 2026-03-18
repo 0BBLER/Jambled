@@ -11,6 +11,7 @@
 .letters-full-container {
   border-left: 1px solid rgb(112, 112, 112);
   border-right: 1px solid rgb(112, 112, 112);
+  overflow-y: auto;
 }
 
 .letter-input {
@@ -39,4 +40,8 @@
 .letters-container-title {
   text-align: center;
   text-decoration: underline;
+}
+
+.letter-invalid {
+  color: rgb(146, 78, 78) !important;
 }

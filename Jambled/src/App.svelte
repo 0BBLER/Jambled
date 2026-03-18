@@ -21,6 +21,7 @@
   let instructionsToggled = $state(false);
   let finishPopup = $state<FinishPopup>();
   let giveUpPopup = $state<GiveUpPopup>();
+  let letterPicker = $state<LetterPicker>();
   type ModeButtonType = " timer " | " extension ";
   let selectedMode = $state<GameMode>("classic");
 
@@ -30,6 +31,9 @@
 
   function start() {
     if (articleViewer) {
+      if (letterPicker) {
+        letterPicker.resetValues();
+      }
       game.start(selectedMode);
       articleViewer.loadData();
 
@@ -106,6 +110,7 @@
         userMap={reactiveUserMap}
         {setLetterCallback}
         charManager={game.charManager}
+        bind:this={letterPicker}
       ></LetterPicker>
       <ArticleViewer
         done={game.done}

@@ -77,9 +77,9 @@ export class CharManager {
     return true;
   }
 
+  //change the user's inputted swaps
   modUserMap(from: string, to: string) {
     if (!alphabet.includes(from) || !alphabet.includes(to)) {
-      console.error("KEY DOES NOT EXIST");
       return false;
     }
     if (this.userMap[from] == to) return false;
@@ -87,6 +87,7 @@ export class CharManager {
     return this.generateMasterMap();
   }
 
+  //weight the different letters based on their frequency in the article
   setValueMap(map: Record<string, number>, charCount: number) {
     for (const [key, value] of Object.entries(map)) {
       this.valueMap[key] = (value / charCount) * charWeighting;

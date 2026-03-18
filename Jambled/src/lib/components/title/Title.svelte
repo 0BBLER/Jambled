@@ -1,3 +1,5 @@
+<!-- this is the cool scrolling main menu title -->
+
 <script lang="ts">
   import { alphabet } from "$lib/charManager";
 
@@ -12,6 +14,7 @@
   {#each finalLetterOffsets as offset, i}
     <div class="letter-col-wrapper" style="--offset:{offset + 24}">
       <div class="letter-col-container">
+      <!-- 3 repeats of the alphabet so that you can scroll up and down -->
         {#each letters.concat(letters).concat(letters) as subletter}
           <span class="title-letter {subletter == word[i] ? 'special' : ''}"
             >{subletter}</span

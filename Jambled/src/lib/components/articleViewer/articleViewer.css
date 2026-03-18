@@ -42,8 +42,8 @@
 .article-title {
   position: absolute;
   width: 100%;
-  left: 125px;
-  width: calc(100% - 125px - 40px);
+  left: 135px;
+  width: calc(100% - 135px - 40px);
   border-bottom: 2px solid rgb(211, 211, 211);
   font-size: 3em;
   background-color: rgb(36, 36, 36);

@@ -1,3 +1,5 @@
+//simple toasts styled from app.css
+//they are only used for score changes
 export class ToastManager {
   elements: HTMLDivElement[];
   toastId;
@@ -5,6 +7,8 @@ export class ToastManager {
     this.elements = [];
     this.toastId = 0;
   }
+
+
   addToast(text: string, classes: string = "") {
     const element = document.createElement("div");
     element.textContent = text;
@@ -17,7 +21,7 @@ export class ToastManager {
     }, 0);
     setTimeout(() => {
       element.classList.remove("active");
-    }, 3000);
+    }, 3000); //3s active time
     setTimeout(() => {
       element.remove();
       this.elements = this.elements.filter((x) => x.id != id);
