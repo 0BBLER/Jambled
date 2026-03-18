@@ -9,6 +9,8 @@
   import { Game } from "$lib/game.svelte";
   import { userConfig } from "$lib/store.svelte";
 
+  export const prerender = true;
+
   let articleViewer = $state<ArticleViewer>();
 
   let game = new Game();
