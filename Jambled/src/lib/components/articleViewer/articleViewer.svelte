@@ -71,6 +71,10 @@
       element.remove();
     });
 
+    articleDiv.querySelectorAll("th").forEach((element) => {
+      element.classList.add("override-th")
+    });
+
     articleDiv.querySelectorAll("video").forEach((element) => {
       element.remove();
     });

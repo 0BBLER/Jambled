@@ -27,8 +27,8 @@
   cursor: pointer;
 }
 
-.letter-changed {
-  opacity: 0.5;
+.letter-unchanged {
+  color: rgb(102, 102, 102);
 }
 
 .letters-container-title {

@@ -5,8 +5,10 @@
     score: number;
     game: Game;
     giveUpCallback: () => void;
+    newGameCallback: () => void;
+    gameDone: boolean;
   }
-  let { score, game, giveUpCallback }: Props = $props();
+  let { score, game, giveUpCallback, newGameCallback, gameDone }: Props = $props();
 
   let inputElement = $state<HTMLInputElement>();
 
@@ -20,9 +22,7 @@
 </script>
 
 <div class="top-bar">
-  <div class="top">
-    <button class="give-up" onclick={giveUpCallback}>Give up</button>
-  </div>
+  <div class="top"></div>
   <div class="bottom">
     <div class="top-bar-title">Jambled</div>
     <input
@@ -36,6 +36,12 @@
       placeholder="Enter title guess here"
       onkeydown={inputKeydown}
     />
+    {#if !gameDone}
+      <button class="give-up" onclick={giveUpCallback}>Give up</button>
+    {/if}
+    {#if gameDone}
+      <button class="new-game" onclick={newGameCallback}>New game</button>
+    {/if}
     <div class="top-score">Score: {score}</div>
   </div>
 </div>

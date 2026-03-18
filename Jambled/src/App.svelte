@@ -68,7 +68,12 @@
   class="{showTitleScreen ? 'hidden' : ''} {userConfig.darkMode ? 'dark' : ''}"
 >
   <div id="game" class={userConfig.darkMode ? "dark" : ""}>
-    <TopBar giveUpCallback={giveUpButtonPressed} {game} score={game.score}
+    <TopBar
+      newGameCallback={start}
+      gameDone={game.done}
+      giveUpCallback={giveUpButtonPressed}
+      {game}
+      score={game.score}
     ></TopBar>
     <div class="midsection">
       <LetterPicker

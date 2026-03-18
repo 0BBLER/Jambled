@@ -131,3 +131,8 @@ button:hover {
   height: 100%;
   min-height: 0;
 }
+
+.override-th {
+  background-color: rgba(109, 109, 109, 0.185) !important;
+  color: rgb(204, 204, 204) !important;
+}

@@ -18,6 +18,8 @@
 
 .give-up {
   margin-left: auto;
+  color: rgb(202, 31, 31);
+  background-color: rgb(80, 59, 59);
 }
 
 .top-bar-title {
@@ -28,8 +30,8 @@
 
 .top-score {
   font-size: inherit;
-  margin-left: auto;
   font-weight: bold;
+  margin-left: 10px;
 }
 
 .guess-input {
@@ -41,4 +43,11 @@
   font-family: inherit;
   field-sizing: content;
   font-size: inherit;
+  margin-right: auto;
+  max-width: 800px;
+}
+
+.new-game {
+  font-size: inherit;
+  color: rgb(147, 216, 158);
 }

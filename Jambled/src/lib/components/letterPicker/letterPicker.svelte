@@ -32,11 +32,11 @@
   <div class="letters-container-title">Letter swaps</div>
   <div class="letters-container">
     {#each alphabet as letter, i}
-      <div class={userMap[letter] == letter ? "letter-changed" : ""}>
+      <div class={userMap[letter] == letter ? "letter-unchanged" : ""}>
         {letter.toUpperCase()}
       </div>
       <div>
-        <span class={userMap[letter] == letter ? "letter-changed" : ""}>⇾</span>
+        <span class={userMap[letter] == letter ? "letter-unchanged" : ""}>⇾</span>
         <input
           type="text"
           oninput={(e) => {
@@ -44,7 +44,7 @@
           }}
           onfocus={onFocus}
           class="letter-input {userMap[letter] == letter
-            ? 'letter-changed'
+            ? 'letter-unchanged'
             : ''}"
           value={userMap[letter]?.toUpperCase()}
           name="letter-input-{letter}"
