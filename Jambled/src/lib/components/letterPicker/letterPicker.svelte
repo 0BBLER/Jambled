@@ -38,7 +38,7 @@
   <div class="letters-container-title">Letter swaps</div>
   <div class="letters-container">
     {#each alphabet as letter}
-      <div class={userMap[letter] == letter ? "letter-unchanged" : ""}>
+      <div style="margin-right: 2px" class={userMap[letter] == letter ? "letter-unchanged" : ""}>
         {letter.toUpperCase()}
       </div>
       <div>

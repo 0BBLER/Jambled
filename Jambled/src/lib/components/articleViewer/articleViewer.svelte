@@ -64,6 +64,11 @@
 
     articleDiv.querySelectorAll("a").forEach((element) => {
       element.href = "javascript:void(0)";
+      element.title = "";
+    });
+
+    articleDiv.querySelectorAll("abbr").forEach((element) => {
+      element.title = "";
     });
 
     articleDiv.querySelectorAll("audio").forEach((element) => {
@@ -144,9 +149,11 @@
   });
 </script>
 
+<div class="article-title">
+  {articleTitleShuffled}
+</div>
 <div class={$articleLoaded ? "article-preview" : "hidden"}>
-  <h1>{articleTitleShuffled}</h1>
-  <hr />
+  <div class="title-gap"></div>
   <div
     bind:this={articleDiv}
     id={`article`}

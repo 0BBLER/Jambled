@@ -29,6 +29,11 @@
 
 .letter-unchanged {
   color: rgb(102, 102, 102);
+  transition: color 200ms ease-in-out;
+}
+
+.letter-unchanged:hover {
+  color: rgb(223, 223, 223);
 }
 
 .letters-container-title {

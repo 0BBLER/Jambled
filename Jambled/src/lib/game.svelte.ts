@@ -53,9 +53,9 @@ export class Game {
     this.done = false;
     this.charGuesses = 0;
     this.titleGuesses = 0;
-    this.updateScore(false);
     this.guessedChars.length = 0;
     this.wonGame = false;
+    this.updateScore(false);
   }
 
   guessTitle(guess: string) {
@@ -71,7 +71,7 @@ export class Game {
       });
       this.wonGame = true;
       this.done = true;
-      this.updateScore(true);
+      this.updateScore(false);
       this.newHighscore = trySetHighscore(this.score);
     } else {
       this.titleGuesses = this.titleGuesses + 1;
@@ -91,7 +91,6 @@ export class Game {
         return false;
       }
       const origLetter = find[0];
-      console.log(origLetter);
       this.guessedChars.push(origLetter);
       this.charGuesses = this.charGuesses + 1;
       this.updateScore(true);

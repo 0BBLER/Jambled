@@ -1,6 +1,8 @@
 import { Game } from "./game.svelte";
 import { shuffleArr } from "./utils";
 
+const charWeighting = 7500;
+
 //prettier-ignore
 export const alphabet : string[] = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"] as const;
 export type Letter = (typeof alphabet)[number];
@@ -87,7 +89,7 @@ export class CharManager {
 
   setValueMap(map: Record<string, number>, charCount: number) {
     for (const [key, value] of Object.entries(map)) {
-      this.valueMap[key] = (value / charCount) * 5000;
+      this.valueMap[key] = (value / charCount) * charWeighting;
     }
   }
 
