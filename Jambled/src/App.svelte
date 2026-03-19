@@ -8,7 +8,13 @@
   import TopBar from "$lib/components/topBar/TopBar.svelte";
   import { Game } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
-  import { userConfig } from "$lib/store.svelte";
+  import {
+    resetClassicScore,
+    resetSpeedrunScore,
+    scores,
+    userConfig,
+  } from "$lib/store.svelte";
+  import { formatTime } from "$lib/utils";
 
   export const prerender = true;
 
@@ -20,6 +26,7 @@
   });
   let showTitleScreen = $state(true);
   let instructionsToggled = $state(false);
+  let highscoresToggled = $state(false);
   let finishPopup = $state<FinishPopup>();
   let giveUpPopup = $state<GiveUpPopup>();
   let letterPicker = $state<LetterPicker>();
@@ -79,6 +86,14 @@
     }
   }
 
+  let classicBest = $state(-999999);
+  let speedrunBest = $state(999999);
+
+  scores.subscribe((data) => {
+    classicBest = data.classic;
+    speedrunBest = data.speedrun;
+  });
+
   $effect(() => {
     if (finishPopup && game.done) {
       finishPopup.getModal()?.open();
@@ -89,7 +104,7 @@
 <svelte:head>
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=extension,timer"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=extension,timer,workspace_premium"
   />
 </svelte:head>
 
@@ -140,12 +155,48 @@
       ><div class="material-symbols-outlined mode-icon">{modeIcon}</div>
       <div class="mode-hint">{selectedMode}</div></button
     >
-    <button class="big-button play-button" onclick={()=>{
-      playButtonPressed();
-      playClick();
-    }}
-      >Play</button
+    <button
+      class="big-button play-button"
+      onclick={() => {
+        playButtonPressed();
+        playClick();
+      }}>Play</button
     >
+    <button
+      class="big-button mode-button"
+      onclick={() => {
+        highscoresToggled = !highscoresToggled;
+        playClick2();
+      }}
+      ><div class="material-symbols-outlined mode-icon">workspace_premium</div>
+      <div class="mode-hint">best scores</div></button
+    >
+    <div class="highscores-info {highscoresToggled ? 'expanded' : ''}">
+      <div class="highscore-info">
+        Classic: {classicBest == undefined || classicBest == -999999
+          ? "no personal best"
+          : classicBest}
+      </div>
+      <button
+        class="reset-score-button"
+        onclick={() => {
+          resetClassicScore();
+          playClick2();
+        }}>reset classic</button
+      >
+      <div class="highscore-info">
+        Speedrun: {speedrunBest == undefined || speedrunBest == 999999
+          ? "no personal best"
+          : formatTime(speedrunBest)}
+      </div>
+      <button
+        class="reset-score-button"
+        onclick={() => {
+          resetSpeedrunScore();
+          playClick2();
+        }}>reset speedrun</button
+      >
+    </div>
   </div>
   <button
     class="z-up big-button how-button"
@@ -170,4 +221,12 @@
       left panel.
     {/if}
   </div>
+  <button
+    class="github-button"
+    onclick={() => {
+      window.open("https://github.com/0BBLER/Jambled");
+    }}
+    title="open GitHub repository"
+    ><img alt="GitHub logo" width="80px" height="80px" src="github.png" />
+  </button>
 </div>

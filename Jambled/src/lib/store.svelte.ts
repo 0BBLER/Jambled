@@ -2,7 +2,8 @@ import { writable } from "svelte/store";
 
 export const userConfig: UserConfig = { darkMode: true }; //dark mode is only half implemented so light mode will break things
 
-interface SaveData { //localstorage format
+interface SaveData {
+  //localstorage format
   scores: {
     classic: number;
     speedrun: number;
@@ -51,4 +52,23 @@ export function trySetHighscore(score: number, mode: GameMode) {
   }
 
   return false;
+}
+
+export function resetClassicScore() {
+  saveData.scores.classic = -999999;
+  localStorage.setItem("jambledData", JSON.stringify(saveData));
+  scores.update((old) => {
+    old.classic = -999999;
+    return old;
+  });
+}
+
+
+export function resetSpeedrunScore() {
+  saveData.scores.speedrun = 999999;
+  localStorage.setItem("jambledData", JSON.stringify(saveData));
+  scores.update((old) => {
+    old.speedrun = 999999;
+    return old;
+  });
 }

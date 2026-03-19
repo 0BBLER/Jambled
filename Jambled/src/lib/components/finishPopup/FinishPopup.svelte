@@ -22,7 +22,7 @@
     name: string;
   }
   const winNames: WinName[] = [
-    { minimumScore: -999999, maximumTime: 999999999999, name: "wikifetus" },
+    { minimumScore: -999999, maximumTime: 999999999, name: "wikifetus" },
     { minimumScore: 2000, maximumTime: 300000, name: "wikikiddie" },
     { minimumScore: 6000, maximumTime: 150000, name: "wikimaster" },
     { minimumScore: 9000, maximumTime: 60000, name: "wikigod" },

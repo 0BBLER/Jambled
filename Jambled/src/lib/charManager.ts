@@ -1,7 +1,7 @@
 import { Game } from "./game.svelte";
 import { shuffleArr } from "./utils";
 
-const charWeighting = 7500;
+const charWeighting = 4000;
 
 //prettier-ignore
 export const alphabet : string[] = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"] as const;
