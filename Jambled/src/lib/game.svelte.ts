@@ -2,6 +2,7 @@ import confetti from "@hiseb/confetti";
 import { CharManager, Letter } from "./charManager";
 import { ToastManager } from "./toastManager";
 import { articleLoaded, trySetHighscore } from "./store.svelte";
+import { playConfetti, playNoisemaker } from "./sounds";
 
 export class Game {
   toastManager: ToastManager = new ToastManager();
@@ -113,11 +114,46 @@ export class Game {
   }
 
   private win() {
-    confetti({
-      position: { x: window.innerWidth / 2, y: 50 },
-      count: 400,
-      fade: false,
-    });
+    //SOUND CUTOFFS
+    if (this.currentMode == "classic") {
+      if (this.score < 1) {
+        confetti({
+          position: { x: window.innerWidth / 2, y: 50 },
+          count: 5,
+          fade: false,
+        });
+      } else {
+        for (let i = 0; i < Math.ceil(this.score / 1000); i++) {
+          setTimeout(() => {
+            confetti({
+              position: { x: window.innerWidth / 2, y: 50 },
+              count: Math.max(5, 10 + (this.score - 2000) / 10),
+              fade: false,
+            });
+          }, i * 50);
+        }
+      }
+      if (this.score < 4500) {
+        playNoisemaker();
+      } else {
+        playConfetti();
+      }
+    } else if (this.currentMode == "speedrun") {
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          confetti({
+            position: { x: window.innerWidth / 2, y: 50 },
+            count: 800 - i * 70,
+            fade: false,
+          });
+        }, i * 50);
+      }
+      if (this.elapsedTime > 120) {
+        playNoisemaker();
+      } else {
+        playConfetti();
+      }
+    }
     this.stopGame(true);
   }
 

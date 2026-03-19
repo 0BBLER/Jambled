@@ -1,6 +1,7 @@
 <script lang="ts">
   import { alphabet, CharManager, type Letter } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
+  import { playClick2 } from "$lib/sounds";
   import { articleLoaded } from "$lib/store.svelte";
 
   interface Props {
@@ -22,7 +23,7 @@
   ) {
     if (!event.currentTarget) return;
     if (!$articleLoaded || game.done) {
-      return;
+      event.currentTarget.value = lastValues[letter];
     }
     const value = event.currentTarget.value.toUpperCase().substring(0, 1);
     const set = setLetterCallback(letter, value.toLowerCase());
@@ -30,6 +31,7 @@
       event.currentTarget.blur();
       event.currentTarget.value = value;
       lastValues[letter] = value;
+      playClick2();
     } else {
       event.currentTarget.value = lastValues[letter];
     }

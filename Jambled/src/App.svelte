@@ -7,6 +7,7 @@
   import Title from "$lib/components/title/Title.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
   import { Game } from "$lib/game.svelte";
+  import { playClick, playClick2 } from "$lib/sounds";
   import { userConfig } from "$lib/store.svelte";
 
   export const prerender = true;
@@ -130,11 +131,19 @@
   <Title></Title>
   <div style="height: 300px"></div>
   <div class="z-up play-buttons-container">
-    <button class="big-button mode-button" onclick={switchGameMode}
+    <button
+      class="big-button mode-button"
+      onclick={() => {
+        switchGameMode();
+        playClick2();
+      }}
       ><div class="material-symbols-outlined mode-icon">{modeIcon}</div>
       <div class="mode-hint">{selectedMode}</div></button
     >
-    <button class="big-button play-button" onclick={playButtonPressed}
+    <button class="big-button play-button" onclick={()=>{
+      playButtonPressed();
+      playClick();
+    }}
       >Play</button
     >
   </div>
@@ -142,6 +151,7 @@
     class="z-up big-button how-button"
     onclick={() => {
       instructionsToggled = !instructionsToggled;
+      playClick2();
     }}>How to play</button
   >
   <div class="z-up play-info {instructionsToggled ? 'expanded' : ''}">

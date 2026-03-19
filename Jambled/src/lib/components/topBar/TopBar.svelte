@@ -2,6 +2,7 @@
 <!-- contains title, title input, and score info -->
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
+  import { playClick, playClick2 } from "$lib/sounds";
   import { scores } from "$lib/store.svelte";
   import { formatTime } from "$lib/utils";
 
@@ -45,10 +46,16 @@
     />
     <!-- give up/new game buttons -->
     {#if !gameDone}
-      <button class="give-up" onclick={giveUpCallback}>Give up</button>
+      <button class="give-up" onclick={()=>{
+        giveUpCallback();
+        playClick2();
+      }}>Give up</button>
     {/if}
     {#if gameDone}
-      <button class="new-game" onclick={newGameCallback}>New game</button>
+      <button class="new-game" onclick={()=>{
+        newGameCallback();
+        playClick();
+      }}>New game</button>
     {/if}
     <!-- score info -->
     <div class="score-info">
