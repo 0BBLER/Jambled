@@ -16,6 +16,7 @@
   font-size: 5em;
   line-height: 1em;
   font-weight: bold;
+  text-shadow: 0 0 4px white;
 }
 
 .score-breakdown-header {
@@ -31,4 +32,8 @@
   font-size: 1.3rem;
   color: rgb(250, 246, 17);
   text-shadow: 0 0 3px rgb(247, 246, 189);
+}
+
+.wiki-name {
+  font-size: 1.2em;
 }

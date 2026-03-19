@@ -139,16 +139,19 @@ export class Game {
         playConfetti();
       }
     } else if (this.currentMode == "speedrun") {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < Math.max(1, 10 - this.elapsedTime / 20000); i++) {
         setTimeout(() => {
           confetti({
             position: { x: window.innerWidth / 2, y: 50 },
-            count: 800 - i * 70,
+            count: Math.min(
+              Math.max(5, 800 - (this.elapsedTime - 60000) / 250),
+              1000,
+            ),
             fade: false,
           });
         }, i * 50);
       }
-      if (this.elapsedTime > 120) {
+      if (this.elapsedTime > 120000) {
         playNoisemaker();
       } else {
         playConfetti();

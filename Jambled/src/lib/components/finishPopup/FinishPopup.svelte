@@ -15,6 +15,18 @@
   export function getModal() {
     return modal;
   }
+
+  interface WinName {
+    minimumScore: number;
+    maximumTime: number;
+    name: string;
+  }
+  const winNames: WinName[] = [
+    { minimumScore: -999999, maximumTime: 999999999999, name: "wikifetus" },
+    { minimumScore: 2000, maximumTime: 300000, name: "wikikiddie" },
+    { minimumScore: 6000, maximumTime: 150000, name: "wikimaster" },
+    { minimumScore: 9000, maximumTime: 60000, name: "wikigod" },
+  ];
 </script>
 
 <Modal bind:this={modal} classes="finish-popup-container">
@@ -38,7 +50,21 @@
   {/if}
   <!-- special message -->
   {#if game.wonGame}
-    <div>You're a <b>wikimaster</b>!</div>
+    {#if game.currentMode == "classic"}
+      <div class="wiki-name">
+        You're a <b
+          >{winNames.findLast((name) => name.minimumScore < game.score)?.name ??
+            "wikimaster"}</b
+        >!
+      </div>
+    {:else if game.currentMode == "speedrun"}
+      <div class="wiki-name">
+        You're a <b
+          >{winNames.findLast((name) => name.maximumTime > game.elapsedTime)
+            ?.name ?? "wikimaster"}</b
+        >!
+      </div>
+    {/if}
   {/if}
   <!-- only include score breakdown for classic -->
   {#if game.currentMode == "classic"}
