@@ -33,9 +33,10 @@ async function getRandomWikiArticle() {
 
 export async function getArticleData() {
   //TODO fix if somehow an article was not found
+  //no way that happens though right
   //maybe use preset
   const randomTitle = (await getRandomWikiArticle()).title;
-  console.log(randomTitle);
+  //console.log(randomTitle);
   const data = await fetch(
     `https://en.wikipedia.org/w/api.php?action=parse&page=${randomTitle}&prop=text&format=json&origin=*`,
   );
