@@ -11,10 +11,17 @@
     game: Game;
     giveUpCallback: () => void;
     newGameCallback: () => void;
+    titleClickedCallback: () => void;
     gameDone: boolean;
   }
-  let { score, game, giveUpCallback, newGameCallback, gameDone }: Props =
-    $props();
+  let {
+    score,
+    game,
+    giveUpCallback,
+    newGameCallback,
+    gameDone,
+    titleClickedCallback,
+  }: Props = $props();
 
   let inputElement = $state<HTMLInputElement>();
 
@@ -30,8 +37,18 @@
 <div class="top-bar">
   <div class="top"></div>
   <div class="bottom">
-  <!-- title -->
-    <div class="top-bar-title">Jambled</div>
+    <!-- title -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      onclick={() => {
+        titleClickedCallback();
+        playClick2();
+      }}
+      class="top-bar-title"
+    >
+      Jambled
+    </div>
     <!-- title input -->
     <input
       type="text"
@@ -46,16 +63,22 @@
     />
     <!-- give up/new game buttons -->
     {#if !gameDone}
-      <button class="give-up" onclick={()=>{
-        giveUpCallback();
-        playClick2();
-      }}>Give up</button>
+      <button
+        class="give-up"
+        onclick={() => {
+          giveUpCallback();
+          playClick2();
+        }}>Give up</button
+      >
     {/if}
     {#if gameDone}
-      <button class="new-game" onclick={()=>{
-        newGameCallback();
-        playClick();
-      }}>New game</button>
+      <button
+        class="new-game"
+        onclick={() => {
+          newGameCallback();
+          playClick();
+        }}>New game</button
+      >
     {/if}
     <!-- score info -->
     <div class="score-info">

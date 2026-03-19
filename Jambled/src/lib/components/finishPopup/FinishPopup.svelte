@@ -36,18 +36,6 @@
   {:else}
     <div class="you-gave-up">You gave up!</div>
   {/if}
-  <!-- score/time -->
-  {#if game.currentMode == "classic"}
-    <div>Your score:</div>
-    <div class="finish-score">{game.score}</div>
-  {:else if game.currentMode == "speedrun"}
-    <div>Your time:</div>
-    <div class="finish-score">{formatTime(game.elapsedTime)}</div>
-  {/if}
-  <!-- new highscore -->
-  {#if game.newHighscore}
-    <div class="new-highscore">That's a new highscore!</div>
-  {/if}
   <!-- special message -->
   {#if game.wonGame}
     {#if game.currentMode == "classic"}
@@ -65,6 +53,18 @@
         >!
       </div>
     {/if}
+  {/if}
+  <!-- score/time -->
+  {#if game.currentMode == "classic"}
+    <div>Your score:</div>
+    <div class="finish-score">{game.score}</div>
+  {:else if game.currentMode == "speedrun"}
+    <div>Your time:</div>
+    <div class="finish-score">{formatTime(game.elapsedTime)}</div>
+  {/if}
+  <!-- new highscore -->
+  {#if game.newHighscore}
+    <div class="new-highscore">That's a new highscore!</div>
   {/if}
   <!-- only include score breakdown for classic -->
   {#if game.currentMode == "classic"}

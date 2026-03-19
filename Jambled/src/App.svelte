@@ -4,6 +4,7 @@
   import FinishPopup from "$lib/components/finishPopup/FinishPopup.svelte";
   import GiveUpPopup from "$lib/components/giveUpPopup/GiveUpPopup.svelte";
   import LetterPicker from "$lib/components/letterPicker/LetterPicker.svelte";
+  import Modal from "$lib/components/modal/Modal.svelte";
   import Title from "$lib/components/title/Title.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
   import { Game } from "$lib/game.svelte";
@@ -30,6 +31,7 @@
   let finishPopup = $state<FinishPopup>();
   let giveUpPopup = $state<GiveUpPopup>();
   let letterPicker = $state<LetterPicker>();
+  let mainMenuPopup = $state<Modal>();
   type ModeButtonType = " timer " | " extension ";
   let selectedMode = $state<GameMode>("classic");
 
@@ -86,6 +88,16 @@
     }
   }
 
+  function titleClickedCallback() {
+    if (game.done) {
+      location.reload();
+    } else {
+      if (mainMenuPopup) {
+        mainMenuPopup.open();
+      }
+    }
+  }
+
   let classicBest = $state(-999999);
   let speedrunBest = $state(999999);
 
@@ -114,6 +126,7 @@
 >
   <div id="game" class={userConfig.darkMode ? "dark" : ""}>
     <TopBar
+      {titleClickedCallback}
       newGameCallback={start}
       gameDone={game.done}
       giveUpCallback={giveUpButtonPressed}
@@ -139,6 +152,9 @@
     <FinishPopup bind:this={finishPopup} {game}></FinishPopup>
     <GiveUpPopup giveUpCallback={giveUp} bind:this={giveUpPopup} {game}
     ></GiveUpPopup>
+    <Modal bind:this={mainMenuPopup} classes="">
+      <div>You can only leave when not ingame.</div>
+    </Modal>
   </div>
 </div>
 <!-- title screen/main menu -->
