@@ -190,6 +190,7 @@ button:hover {
   background-color: transparent !important;
   outline: none !important;
   transition: transform 700ms ease-in-out;
+  z-index: 2;
 }
 
 .github-button:hover {

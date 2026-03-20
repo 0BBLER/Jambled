@@ -1,0 +1,17 @@
+{
+  "name": "premaker",
+  "description": "Jambled article premaker",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx src/main.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/pako": "^2.0.4"
+  },
+  "dependencies": {
+    "pako": "^2.1.0",
+    "typescript": "^5.9.3"
+  }
+}
