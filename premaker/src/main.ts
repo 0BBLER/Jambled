@@ -6,8 +6,6 @@ const endpoint =
   "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=random&grnnamespace=0&grnlimit=500&prop=info&origin=*";
 
 async function getArticles(): Promise<number[]> {
-  //prettier-ignore
-  return JSON.parse(fs.readFileSync("out/json.json", "utf-8"));
   const data = await fetch(endpoint);
   const json = await data.json();
 
