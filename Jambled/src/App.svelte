@@ -10,12 +10,16 @@
   import { Game } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
   import {
+    daily,
+    loadDailyArticles,
+    playedDaily,
     resetClassicScore,
     resetSpeedrunScore,
     scores,
     userConfig,
   } from "$lib/store.svelte";
   import { formatTime } from "$lib/utils";
+  import { onMount } from "svelte";
 
   export const prerender = true;
 
@@ -35,17 +39,37 @@
   type ModeButtonType = " timer " | " extension ";
   let selectedMode = $state<GameMode>("classic");
 
+  let canPlayDaily = $derived.by<boolean>(() => {
+    console.log("refreshed can play");
+    if (selectedMode == "classic") {
+      return (
+        new Date($daily.classicTimestamp).toDateString() !=
+        new Date().toDateString()
+      );
+    } else {
+      return (
+        new Date($daily.speedrunTimestamp).toDateString() !=
+        new Date().toDateString()
+      );
+    }
+  });
+
   let modeIcon = $derived<ModeButtonType>(
     selectedMode == "classic" ? " extension " : " timer ",
   );
+
+  onMount(() => {
+    loadDailyArticles();
+  });
 
   function start() {
     if (articleViewer) {
       if (letterPicker) {
         letterPicker.resetValues();
       }
-      game.start(selectedMode);
-      articleViewer.loadData();
+      const isDaily = !playedDaily(selectedMode);
+      game.start(selectedMode, isDaily);
+      articleViewer.loadData(selectedMode, isDaily);
 
       reactiveUserMap = {};
       reactiveUserMap = {
@@ -90,21 +114,14 @@
 
   function titleClickedCallback() {
     if (game.done) {
-      location.reload();
+      showTitleScreen = true;
+      articleViewer?.clear();
     } else {
       if (mainMenuPopup) {
         mainMenuPopup.open();
       }
     }
   }
-
-  let classicBest = $state(-999999);
-  let speedrunBest = $state(999999);
-
-  scores.subscribe((data) => {
-    classicBest = data.classic;
-    speedrunBest = data.speedrun;
-  });
 
   $effect(() => {
     if (finishPopup && game.done) {
@@ -176,7 +193,7 @@
       onclick={() => {
         playButtonPressed();
         playClick();
-      }}>Play</button
+      }}>{canPlayDaily ? "Play daily" : "Play random"}</button
     >
     <button
       class="big-button mode-button"
@@ -189,9 +206,9 @@
     >
     <div class="highscores-info {highscoresToggled ? 'expanded' : ''}">
       <div class="highscore-info">
-        Classic: {classicBest == undefined || classicBest == -999999
+        Classic: {$scores.classic == undefined || $scores.classic == -999999
           ? "no personal best"
-          : classicBest}
+          : $scores.classic}
       </div>
       <button
         class="reset-score-button"
@@ -201,9 +218,9 @@
         }}>reset classic</button
       >
       <div class="highscore-info">
-        Speedrun: {speedrunBest == undefined || speedrunBest == 999999
+        Speedrun: {$scores.speedrun == undefined || $scores.speedrun == 999999
           ? "no personal best"
-          : formatTime(speedrunBest)}
+          : formatTime($scores.speedrun)}
       </div>
       <button
         class="reset-score-button"

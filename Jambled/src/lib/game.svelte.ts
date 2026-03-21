@@ -1,7 +1,7 @@
 import confetti from "@hiseb/confetti";
 import { CharManager, Letter } from "./charManager";
 import { ToastManager } from "./toastManager";
-import { articleLoaded, trySetHighscore } from "./store.svelte";
+import { articleLoaded, setDailyData, SPEEDRUN_UNSET, trySetHighscore } from "./store.svelte";
 import { playConfetti, playNoisemaker } from "./sounds";
 
 export class Game {
@@ -21,6 +21,7 @@ export class Game {
   startedTimestamp: number;
   waitingForStart: boolean;
   endedTimestamp: number;
+  isDaily: boolean;
 
   elapsedTime = $state(0);
 
@@ -39,6 +40,7 @@ export class Game {
     this.startedTimestamp = -1;
     this.endedTimestamp = -1;
     this.waitingForStart = false;
+    this.isDaily = false;
 
     articleLoaded.subscribe((loaded) => {
       if (loaded && this.waitingForStart) {
@@ -85,7 +87,7 @@ export class Game {
     this.previousScore = this.score;
   }
 
-  start(mode: GameMode) {
+  start(mode: GameMode, daily: boolean) {
     this.currentMode = mode;
     this.charManager.generate();
     this.articleTitle = "";
@@ -98,6 +100,8 @@ export class Game {
     this.wonGame = false;
     this.updateScore(false);
     this.waitingForStart = true;
+    this.isDaily = daily;
+    this.newHighscore = false;
   }
 
   private stopGame(win: boolean) {
@@ -105,11 +109,17 @@ export class Game {
     this.done = true;
     this.updateScore(false);
     this.endedTimestamp = Date.now();
+
     if (this.currentMode == "classic") {
       this.newHighscore = trySetHighscore(this.score, this.currentMode);
+      if (this.isDaily) setDailyData("classic", this.score);
     } else if (this.currentMode == "speedrun") {
-      if (win)
+      if (win) {
         this.newHighscore = trySetHighscore(this.elapsedTime, this.currentMode);
+        if (this.isDaily) setDailyData("speedrun", this.elapsedTime);
+      } else {
+        if (this.isDaily) setDailyData("speedrun", SPEEDRUN_UNSET);
+      }
     }
   }
 

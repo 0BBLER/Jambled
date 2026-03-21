@@ -3,7 +3,7 @@
 <script lang="ts">
   import { Game } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
-  import { scores } from "$lib/store.svelte";
+  import { CLASSIC_UNSET, scores, SPEEDRUN_UNSET } from "$lib/store.svelte";
   import { formatTime } from "$lib/utils";
 
   interface Props {
@@ -97,11 +97,11 @@
       <!-- highscore info -->
       <div class="best-score">
         {#if game.currentMode == "classic"}
-          {$scores != undefined && $scores.classic != -999999
+          {$scores != undefined && $scores.classic != CLASSIC_UNSET
             ? `Best: ${$scores.classic}`
             : "No personal best"}
         {:else if game.currentMode == "speedrun"}
-          {$scores != undefined && $scores.speedrun != 999999
+          {$scores != undefined && $scores.speedrun != SPEEDRUN_UNSET
             ? `Best: ${formatTime($scores.speedrun)}`
             : "No personal best"}
         {/if}

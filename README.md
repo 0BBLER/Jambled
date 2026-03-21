@@ -32,4 +32,9 @@ npm run preview
 - @hiseb/confetti
   </br></br>
 
+## APIs used
+
+- <a href="https://www.mediawiki.org/wiki/API:Action_API">Wikipedia API</a>
+- <a href="https://time.now">World Time API by Time.Now</a>
+
 ### Jambled is not affiliated with Wikipedia

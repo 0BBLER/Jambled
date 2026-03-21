@@ -1,4 +1,4 @@
-//this seems to be what it likes returning
+//this seems to be what the wikipedia api likes returning
 interface PageInfo {
   pageid: number;
   ns: number;
@@ -12,35 +12,7 @@ interface PageInfo {
   length: number;
 }
 
-const timeEndpoint = "https://time.now/developer/api/timezone/America/Toronto";
-
-//this is a workaround for setting system clocks
-async function fetchTime() {
-  /*   return {
-    abbreviation: "EDT",
-    client_ip: "2001:4958:36f9:1601:d1fb:721e:9bb4:89a8",
-    datetime: "2026-03-20T10:53:29.033059-04:00",
-    day_of_week: 5,
-    day_of_year: 79,
-    dst: true,
-    dst_from: null,
-    dst_offset: 3600,
-    dst_until: null,
-    raw_offset: -18000,
-    timezone: "America/Toronto",
-    unixtime: 1774018409,
-    utc_datetime: "2026-03-20T14:53:29.033112Z",
-    utc_offset: "-04:00",
-    week_number: 12,
-  }; */
-
-  const data = await fetch(timeEndpoint);
-  const json = await data.json();
-  const date = new Date(Number(json.unixtime + "000"));
-  return date;
-}
-
-async function getArticleNameById(id: number) {
+/* async function getArticleNameById(id: number) {
   const url = `https://en.wikipedia.org/w/api.php?format=json&action=query&pageids=${id}`;
   return (
     //not spaghetti code
@@ -54,25 +26,20 @@ async function getArticleNameById(id: number) {
       }
     ).title
   );
-}
+} */
 
-async function getDailyArticle() {
-  const buffer = await (await fetch("daily.bin")).arrayBuffer();
-  const date = await fetchTime();
+export async function getDailyArticle(
+  mode: GameMode,
+  day: number,
+  dailyBuffer: ArrayBuffer,
+) {
+  const pageIndex = day * 2 + (mode == "classic" ? 0 : 1);
   //day of the year
-  const yearDay =
-    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
-      Date.UTC(date.getFullYear(), 0, 1)) /
-    (1000 * 60 * 60 * 24);
-  const yearIndex = date.getFullYear() - 2026;
-  const pageIndex =
-    yearIndex * 366 /* every year is a leap year now */ + yearDay;
-  const pages = new Uint32Array(buffer);
+  const pages = new Uint32Array(dailyBuffer);
   return await getArticleData(pages[pageIndex]);
 }
 
 async function getRandomWikiArticle() {
-  getDailyArticle();
   //40 random
   const data = await fetch(
     "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=random&grnnamespace=0&grnlimit=80&prop=info&origin=*",

@@ -3,7 +3,12 @@
 <script lang="ts">
   import { alphabet, CharManager } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
-  import { articleLoaded, userConfig } from "$lib/store.svelte";
+  import {
+    articleLoaded,
+    classicDailyArticle,
+    speedrunDailyArticle,
+    userConfig,
+  } from "$lib/store.svelte";
   import { getArticleData } from "$lib/wiki";
 
   interface Props {
@@ -20,11 +25,34 @@
 
   let textNodes: { node: Node; origValue: string }[] = [];
 
+  //clear the contents of the preview pane
+  export function clear() {
+    articleLoaded.set(false);
+    if (articleDiv) {
+      articleDiv.innerHTML = "";
+    }
+  }
+
   //fetch article contents and set article container div
-  export async function loadData() {
+  export async function loadData(mode: GameMode, daily: boolean) {
     if (!articleDiv) return;
     articleLoaded.set(false);
-    const articleData = await getArticleData();
+    let articleData: { title: string; text: Record<string, string> };
+    if (daily) {
+      if (mode == "speedrun") {
+        articleData = speedrunDailyArticle;
+      } else {
+        articleData = classicDailyArticle;
+      }
+      if (!articleData || !articleData.title) {
+        articleData = await getArticleData();
+        console.error(
+          "DAILY ARTICLE COULD NOT BE FOUND! A random article was given",
+        );
+      }
+    } else {
+      articleData = await getArticleData();
+    }
     articleTitle = "";
     articleTitle = articleData.title;
     if (articleTitle) {
