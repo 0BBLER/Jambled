@@ -42,15 +42,15 @@
 
   let playedClassic = $derived.by<boolean>(() => {
     return (
-      new Date($daily.classicTimestamp).toDateString() ==
-      new Date().toDateString()
+      new Date($daily.classicTimestamp).toISOString().substring(0, 10) ==
+      new Date().toISOString().substring(0, 10)
     );
   });
 
   let playedSpeedrun = $derived.by<boolean>(() => {
     return (
-      new Date($daily.speedrunTimestamp).toDateString() ==
-      new Date().toDateString()
+      new Date($daily.speedrunTimestamp).toISOString().substring(0, 10) ==
+      new Date().toISOString().substring(0, 10)
     );
   });
 
@@ -59,7 +59,8 @@
   );
 
   onMount(() => {
-    loadDailyArticles();
+    if (!playedDaily("classic") || !playedDaily("speedrun"))
+      loadDailyArticles();
   });
 
   function start() {

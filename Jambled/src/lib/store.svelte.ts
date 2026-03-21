@@ -147,14 +147,14 @@ export function setDailyData(mode: GameMode, score: number) {
 export function playedDaily(mode: GameMode) {
   if (mode == "classic") {
     return (
-      new Date(get(daily).classicTimestamp).toDateString() ==
-      new Date().toDateString()
+      new Date(get(daily).classicTimestamp).toISOString().substring(0, 10) ==
+      new Date().toISOString().substring(0, 10)
     );
   }
   if (mode == "speedrun") {
     return (
-      new Date(get(daily).speedrunTimestamp).toDateString() ==
-      new Date().toDateString()
+      new Date(get(daily).speedrunTimestamp).toISOString().substring(0, 10) ==
+      new Date().toISOString().substring(0, 10)
     );
   }
   return true;
