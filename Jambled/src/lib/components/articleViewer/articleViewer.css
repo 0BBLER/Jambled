@@ -58,3 +58,15 @@
   background-color: rgb(36, 36, 36);
   z-index: 2;
 }
+
+.daily-splash {
+  position: absolute;
+  right: -20px;
+  top: 0px;
+  transform: rotate(30deg);
+  font-size: 1em;
+  color: rgb(194, 137, 15);
+  text-shadow: 0 0 5px rgb(194, 137, 15);
+  cursor: default;
+  pointer-events: none;
+}

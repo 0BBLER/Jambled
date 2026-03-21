@@ -23,6 +23,8 @@
   let articleTitle = $state<string>();
   let articleTitleShuffled = $state<string>();
 
+  let isDaily = $state(false);
+
   let textNodes: { node: Node; origValue: string }[] = [];
 
   //clear the contents of the preview pane
@@ -61,6 +63,7 @@
     articleTitleShuffled = charManager.getShuffled(articleData.title);
     articleDiv.innerHTML = articleData.text["*"];
     cleanArticle();
+    isDaily = daily;
     articleLoaded.set(true);
   }
 
@@ -199,6 +202,9 @@
 
 <div class="article-title">
   {articleTitleShuffled}
+  {#if isDaily}
+    <div class="daily-splash">DAILY</div>
+  {/if}
 </div>
 <div class={$articleLoaded ? "article-preview" : "hidden"}>
   <div class="title-gap"></div>

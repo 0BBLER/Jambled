@@ -16,6 +16,7 @@
     resetClassicScore,
     resetSpeedrunScore,
     scores,
+    SPEEDRUN_UNSET,
     userConfig,
   } from "$lib/store.svelte";
   import { formatTime } from "$lib/utils";
@@ -39,19 +40,18 @@
   type ModeButtonType = " timer " | " extension ";
   let selectedMode = $state<GameMode>("classic");
 
-  let canPlayDaily = $derived.by<boolean>(() => {
-    console.log("refreshed can play");
-    if (selectedMode == "classic") {
-      return (
-        new Date($daily.classicTimestamp).toDateString() !=
-        new Date().toDateString()
-      );
-    } else {
-      return (
-        new Date($daily.speedrunTimestamp).toDateString() !=
-        new Date().toDateString()
-      );
-    }
+  let playedClassic = $derived.by<boolean>(() => {
+    return (
+      new Date($daily.classicTimestamp).toDateString() ==
+      new Date().toDateString()
+    );
+  });
+
+  let playedSpeedrun = $derived.by<boolean>(() => {
+    return (
+      new Date($daily.speedrunTimestamp).toDateString() ==
+      new Date().toDateString()
+    );
   });
 
   let modeIcon = $derived<ModeButtonType>(
@@ -179,6 +179,7 @@
   <Title></Title>
   <div style="height: 300px"></div>
   <div class="z-up play-buttons-container">
+    <!-- gamemode button -->
     <button
       class="big-button mode-button"
       onclick={() => {
@@ -188,13 +189,19 @@
       ><div class="material-symbols-outlined mode-icon">{modeIcon}</div>
       <div class="mode-hint">{selectedMode}</div></button
     >
+    <!-- play button -->
     <button
       class="big-button play-button"
       onclick={() => {
         playButtonPressed();
         playClick();
-      }}>{canPlayDaily ? "Play daily" : "Play random"}</button
+      }}
+      >{(selectedMode == "classic" && !playedClassic) ||
+      (selectedMode == "speedrun" && !playedSpeedrun)
+        ? "Play daily"
+        : "Play random"}</button
     >
+    <!-- highscores button -->
     <button
       class="big-button mode-button"
       onclick={() => {
@@ -204,6 +211,7 @@
       ><div class="material-symbols-outlined mode-icon">workspace_premium</div>
       <div class="mode-hint">best scores</div></button
     >
+    <!-- highscores info popout -->
     <div class="highscores-info {highscoresToggled ? 'expanded' : ''}">
       <div class="highscore-info">
         Classic: {$scores.classic == undefined || $scores.classic == -999999
@@ -229,6 +237,20 @@
           playClick2();
         }}>reset speedrun</button
       >
+    </div>
+    <!-- daily personal score -->
+    <div class="daily-scores-info">
+      <div class="daily-scores-title">Your daily scores</div>
+      <div>
+        Classic: {playedClassic ? $daily.classic : "unplayed"}
+      </div>
+      <div>
+        Speedrun: {playedSpeedrun
+          ? $daily.speedrun == SPEEDRUN_UNSET
+            ? "forfeited"
+            : formatTime($daily.speedrun)
+          : "unplayed"}
+      </div>
     </div>
   </div>
   <button

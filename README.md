@@ -30,7 +30,6 @@ npm run preview
 ## npm dependencies used
 
 - @hiseb/confetti
-  </br></br>
 
 ## APIs used
 

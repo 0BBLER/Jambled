@@ -69,10 +69,6 @@ export async function loadDailyArticles() {
     getDailyArticle("speedrun", day, buffer),
   ]);
   dailyArticlesLoaded.set(true);
-  console.log({
-    classicDaily: classicDailyArticle,
-    speedrunDaily: speedrunDailyArticle,
-  });
 }
 
 //sets vars and updates localstorage on highscore change

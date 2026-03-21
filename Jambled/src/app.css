@@ -221,3 +221,14 @@ button:hover {
   box-sizing: border-box;
   margin-left: 5px;
 }
+
+.daily-scores-title {
+  font-size: 1.5em;
+}
+
+.daily-scores-info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  text-align: left;
+}
