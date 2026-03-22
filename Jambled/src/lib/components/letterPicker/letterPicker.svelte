@@ -49,7 +49,7 @@
   }
 </script>
 
-<div style="position: relative">
+<div style="position: relative; min-height: 0">
   <div class="letter-input-tooltip {$userData.seenTooltip ? 'hidden' : ''}">
     Enter a letter on the line here to swap all of them in the article for the
     new one
