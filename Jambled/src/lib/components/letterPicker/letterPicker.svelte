@@ -47,11 +47,6 @@
   function onFocus(event: Event & { currentTarget: HTMLInputElement }) {
     event.currentTarget.select();
   }
-
-  function handleLetterInput(e: Event & { currentTarget: HTMLInputElement }) {
-    sawTooltip();
-    changeLetterInput(e.currentTarget.value, e);
-  }
 </script>
 
 <div style="position: relative">
@@ -82,7 +77,10 @@
           >
           <input
             type="text"
-            oninput={handleLetterInput}
+            oninput={(e) => {
+              sawTooltip();
+              changeLetterInput(letter, e);
+            }}
             onfocus={onFocus}
             class="letter-input {userMap[letter] == letter
               ? 'letter-unchanged'
