@@ -69,4 +69,5 @@
   text-shadow: 0 0 5px rgb(194, 137, 15);
   cursor: default;
   pointer-events: none;
+  user-select: none;
 }

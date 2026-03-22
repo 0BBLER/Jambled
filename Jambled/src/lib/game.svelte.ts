@@ -175,8 +175,9 @@ export class Game {
   }
 
   guessTitle(guess: string) {
+    const trimmed = guess.trim();
     const compare =
-      guess.localeCompare(this.articleTitle, "en", {
+      trimmed.localeCompare(this.articleTitle, "en", {
         sensitivity: "base",
       }) == 0;
     if (compare) {
