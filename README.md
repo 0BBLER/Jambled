@@ -1,11 +1,15 @@
 # Jambled
 
 A game about decoding Wikipedia articles
+<br>
+No code in this project was written by AI
 
 ## How it works
 
-You get a random article from Wikipedia, except all the letters have been <b>swapped with eachother!</b> Your goal is to figure out what the original title of the article was. There's a helpful box on the side that allows you to swap the letters back.
-</br></br>
+You get a random article from Wikipedia, except all the letters have been <b>swapped with eachother!</b> Your goal is to figure out what the original title of the article was. There's a helpful box on the side that allows you to swap around the letters in the article.
+<br><br>
+Daily articles exist to help integrate Jambled into your morning routine. They reset at midnight UTC.
+<br><br>
 There are <b>two modes:</b>
 
 - <b>Classic:</b> Try to get as high of a score as possible. All letter swaps cost score, scaling with their frequency in the article. Furthermore, all additional letter swaps increase the score lost by a little bit. All incorrect title guesses also cost score.
@@ -27,7 +31,7 @@ npm run build
 npm run preview
 ```
 
-## npm dependencies used
+## Noteworthy libraries used
 
 - @hiseb/confetti
 
