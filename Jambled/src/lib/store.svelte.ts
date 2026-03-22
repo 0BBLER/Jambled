@@ -9,7 +9,9 @@ import { fetchDay } from "./utils";
 export const CLASSIC_UNSET = -99999999;
 export const SPEEDRUN_UNSET = 99999999;
 
-export const userConfig: UserConfig = { darkMode: true }; //dark mode is only half implemented so light mode will break things
+//dark mode is only half implemented so light mode will break things
+//basically this should be removed because now there's a userconfig-type thin in SaveData
+export const userConfig: UserConfig = { darkMode: true };
 
 //localstorage structure
 interface SaveData {
@@ -22,6 +24,9 @@ interface SaveData {
     classicTimestamp: number;
     speedrun: number;
     speedrunTimestamp: number;
+  };
+  data: {
+    seenTooltip: boolean;
   };
 }
 
@@ -42,8 +47,13 @@ if (!saveData.daily) {
   };
 }
 
+if (!saveData.data) {
+  saveData.data = { seenTooltip: false };
+}
+
 export const scores = writable(saveData.scores);
 export const daily = writable(saveData.daily);
+export const userData = writable(saveData.data);
 export const articleLoaded = writable(false);
 export const dailyArticlesLoaded = writable(false);
 
@@ -158,4 +168,11 @@ export function playedDaily(mode: GameMode) {
     );
   }
   return true;
+}
+
+export function sawTooltip() {
+  if (get(userData)?.seenTooltip) return;
+  userData.update((old) => ({ ...old, seenTooltip: true }));
+  saveData.data.seenTooltip = true;
+  uploadSaveData();
 }

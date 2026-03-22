@@ -2,7 +2,7 @@
   import { alphabet, CharManager, type Letter } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
   import { playClick2 } from "$lib/sounds";
-  import { articleLoaded } from "$lib/store.svelte";
+  import { articleLoaded, sawTooltip, userData } from "$lib/store.svelte";
 
   interface Props {
     charManager: CharManager;
@@ -47,41 +47,54 @@
   function onFocus(event: Event & { currentTarget: HTMLInputElement }) {
     event.currentTarget.select();
   }
+
+  function handleLetterInput(e: Event & { currentTarget: HTMLInputElement }) {
+    sawTooltip();
+    changeLetterInput(e.currentTarget.value, e);
+  }
 </script>
 
-<div class="letters-full-container">
-  <div class="letters-container-title">Letter swaps</div>
-  <div class="letters-container">
-    {#each alphabet as letter}
-      <div
-        style="margin-right: 2px"
-        class="{userMap[letter] == letter
-          ? 'letter-unchanged'
-          : ''} {!alphabet.includes(userMap[letter]) ? 'letter-invalid' : ''}"
-      >
-        {letter.toUpperCase()}
-      </div>
-      <div>
-        <span
+<div style="position: relative">
+  <div class="letter-input-tooltip {$userData.seenTooltip ? 'hidden' : ''}">
+    Enter a letter on the line here to swap all of them in the article for the
+    new one
+  </div>
+  <div class="letters-full-container">
+    <div class="letters-container-title">Letter swaps</div>
+
+    <div class="letters-container">
+      {#each alphabet as letter, i}
+        <div
+          style="margin-right: 2px"
           class="{userMap[letter] == letter
             ? 'letter-unchanged'
             : ''} {!alphabet.includes(userMap[letter]) ? 'letter-invalid' : ''}"
-          >⇾</span
         >
-        <input
-          type="text"
-          oninput={(e) => {
-            changeLetterInput(letter, e);
-          }}
-          onfocus={onFocus}
-          class="letter-input {userMap[letter] == letter
-            ? 'letter-unchanged'
-            : ''} {!alphabet.includes(userMap[letter]) ? 'letter-invalid' : ''}"
-          bind:value={letterValues[letter]}
-          name="letter-input-{letter}"
-        />
-      </div>
-    {/each}
+          {letter.toUpperCase()}
+        </div>
+        <div>
+          <span
+            class="{userMap[letter] == letter
+              ? 'letter-unchanged'
+              : ''} {!alphabet.includes(userMap[letter])
+              ? 'letter-invalid'
+              : ''}">⇾</span
+          >
+          <input
+            type="text"
+            oninput={handleLetterInput}
+            onfocus={onFocus}
+            class="letter-input {userMap[letter] == letter
+              ? 'letter-unchanged'
+              : ''} {!alphabet.includes(userMap[letter])
+              ? 'letter-invalid'
+              : ''}"
+            bind:value={letterValues[letter]}
+            name="letter-input-{letter}"
+          />
+        </div>
+      {/each}
+    </div>
   </div>
 </div>
 

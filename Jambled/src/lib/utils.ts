@@ -19,14 +19,14 @@ const timeEndpoint = "https://time.now/developer/api/timezone/America/Toronto";
 export async function fetchDay() {
   const data = await fetch(timeEndpoint);
   const json = await data.json();
-  const date = new Date(Number(json.unixtime + "000"));
+  const date = new Date(json.unixtime * 1000);
 
   const yearDay =
-    (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) -
-      Date.UTC(date.getFullYear(), 0, 1)) /
+    (Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) -
+      Date.UTC(date.getUTCFullYear(), 0, 1)) /
     (1000 * 60 * 60 * 24);
-  const yearIndex = date.getFullYear() - 2026;
-  const pageIndex =
+  const yearIndex = date.getUTCFullYear() - 2026;
+  const dayIndex =
     yearIndex * 366 /* every year is a leap year now */ + yearDay;
-  return pageIndex;
+  return dayIndex;
 }

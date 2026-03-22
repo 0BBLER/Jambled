@@ -12,6 +12,7 @@
   border-left: 1px solid rgb(112, 112, 112);
   border-right: 1px solid rgb(112, 112, 112);
   overflow-y: auto;
+  position: relative;
 }
 
 .letter-input {
@@ -44,4 +45,30 @@
 
 .letter-invalid {
   color: rgb(146, 78, 78) !important;
+}
+
+.letter-input-tooltip {
+  position: absolute;
+  left: 100px;
+  font-size: 1rem;
+  z-index: 3;
+  top: 70px;
+  width: 300px;
+  background-color: rgba(182, 182, 182, 0.9);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: rgb(37, 37, 37);
+}
+
+.letter-input-tooltip::after {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid rgba(182, 182, 182, 0.9);
 }
