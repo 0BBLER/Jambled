@@ -286,3 +286,149 @@
     ><img alt="GitHub logo" width="80px" height="80px" src="github.png" />
   </button>
 </div>
+
+<style>
+  .title-screen {
+    font-family: "Sansation", sans-serif;
+    color: rgb(204, 204, 204);
+    background-color: rgb(36, 36, 36);
+    display: flex;
+    place-items: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 12px;
+  }
+
+  .how-button {
+    font-size: 2rem !important;
+    box-shadow: 0 0 12px rgb(121, 121, 121);
+  }
+
+  .play-button {
+    box-shadow: 0 0 12px rgb(121, 121, 121);
+  }
+
+  .play-buttons-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .mode-button {
+    width: 100px;
+    height: 100px;
+    box-shadow: 0 0 12px rgb(121, 121, 121);
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    justify-content: center;
+  }
+
+  .mode-icon {
+    font-size: 3rem !important;
+  }
+
+  .mode-hint {
+    font-size: 1rem;
+  }
+
+  .play-info {
+    font-size: 2rem;
+    max-width: 640px;
+    overflow: hidden;
+    height: 0;
+    transition: height 500ms ease-in-out;
+    text-align: center;
+    color: rgb(175, 175, 175);
+  }
+
+  .play-info.expanded {
+    height: 300px;
+  }
+
+  .play-info .important {
+    font-weight: bold;
+    font-size: 2.1rem;
+    color: rgb(204, 204, 204);
+    text-shadow: 0 0 3px white;
+  }
+
+  #game {
+    font-family: "Sansation", sans-serif;
+    line-height: 1.6;
+    padding: 16px 16px 8px 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+
+  #game.dark {
+    color: rgb(204, 204, 204);
+    background-color: rgb(36, 36, 36);
+  }
+
+  .midsection {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .github-button {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    background-color: transparent !important;
+    outline: none !important;
+    transition: transform 700ms ease-in-out;
+    z-index: 2;
+  }
+
+  .github-button:hover {
+    transform: rotate(360deg);
+  }
+
+  .highscores-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: 0px;
+    transition: max-width 500ms ease-out;
+    gap: 7px;
+    box-sizing: border-box;
+  }
+
+  .highscores-info.expanded {
+    max-width: 200px;
+  }
+
+  .highscore-info {
+    white-space: nowrap;
+  }
+
+  .reset-score-button {
+    white-space: nowrap;
+    width: min-content;
+    box-sizing: border-box;
+    margin-left: 5px;
+  }
+
+  .daily-scores-title {
+    font-size: 1.5em;
+  }
+
+  .daily-scores-info {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    text-align: left;
+  }
+
+  #game.dark a {
+    color: rgb(71, 185, 230);
+  }
+</style>

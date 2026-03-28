@@ -38,5 +38,14 @@
 </Modal>
 
 <style>
-  @import "./giveUpPopup.css";
+  .give-up-buttons-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .confirm-give-up {
+    font-size: 2em;
+  }
 </style>

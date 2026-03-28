@@ -33,11 +33,12 @@
 <dialog onclick={clicked} bind:this={dialog} class="modal {classes}">
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="modal-contents" onclick={(e) => e.stopPropagation()}> <!-- this is used to prevent clicks inside from closing it -->
+  <div class="modal-contents" onclick={(e) => e.stopPropagation()}>
+    <!-- this is used to prevent clicks inside from closing it -->
     {@render children?.()}
   </div>
 </dialog>
 
 <style>
-  @import "./modal.css";
+  
 </style>

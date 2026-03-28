@@ -14,7 +14,7 @@
   {#each finalLetterOffsets as offset, i}
     <div class="letter-col-wrapper" style="--offset:{offset + 24}">
       <div class="letter-col-container">
-      <!-- 3 repeats of the alphabet so that you can scroll up and down -->
+        <!-- 3 repeats of the alphabet so that you can scroll up and down -->
         {#each letters.concat(letters).concat(letters) as subletter}
           <span class="title-letter {subletter == word[i] ? 'special' : ''}"
             >{subletter}</span
@@ -26,5 +26,119 @@
 </div>
 
 <style>
-  @import "./title.css";
+  .title-container {
+    font-size: 10rem;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    height: 100vh;
+    overflow: hidden;
+    top: 0;
+  }
+
+  .title-container::before {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: linear-gradient(
+      360deg,
+      rgba(36, 36, 36, 1) 0%,
+      rgba(36, 36, 36, 0.68) 56%,
+      rgba(3, 3, 3, 0) 62%,
+      rgba(0, 0, 0, 0) 72%,
+      rgba(36, 36, 36, 0.68) 80%,
+      rgba(36, 36, 36, 1) 100%
+    );
+    z-index: 2;
+    display: block;
+    content: "";
+  }
+
+  .letter-col-wrapper {
+    transform: translateY(calc(var(--offset) * -8rem));
+  }
+
+  .letter-col-container {
+    display: flex;
+    flex-direction: column;
+    line-height: 8rem;
+  }
+
+  .letter-col-wrapper:nth-child(odd) .letter-col-container {
+    animation-name: spin;
+    animation-timing-function: ease;
+  }
+
+  .letter-col-wrapper:nth-child(even) .letter-col-container {
+    animation-name: spinReverse;
+    animation-timing-function: ease;
+  }
+
+  .letter-col-wrapper:nth-child(1) .letter-col-container {
+    animation-duration: 2.1s;
+  }
+  .letter-col-wrapper:nth-child(2) .letter-col-container {
+    animation-duration: 3.6s;
+  }
+  .letter-col-wrapper:nth-child(3) .letter-col-container {
+    animation-duration: 5.1s;
+  }
+  .letter-col-wrapper:nth-child(4) .letter-col-container {
+    animation-duration: 4.2s;
+  }
+  .letter-col-wrapper:nth-child(5) .letter-col-container {
+    animation-duration: 3.8s;
+  }
+  .letter-col-wrapper:nth-child(6) .letter-col-container {
+    animation-duration: 2.4s;
+  }
+  .letter-col-wrapper:nth-child(7) .letter-col-container {
+    animation-duration: 4.1s;
+  }
+
+  .title-letter {
+    display: inline-block;
+    transform: translateY(0);
+    height: 8rem;
+    text-align: center;
+  }
+
+  .title-letter.special {
+    font-weight: bold;
+    color: rgb(241, 241, 241);
+    text-shadow: 0 0 7px white;
+  }
+
+  @keyframes letter {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(calc(var(--offset) * -8rem));
+      opacity: 1;
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(calc(26 * -8rem));
+      opacity: 1;
+    }
+  }
+
+  @keyframes spinReverse {
+    0% {
+      transform: translateY(calc(26 * -8rem));
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 </style>

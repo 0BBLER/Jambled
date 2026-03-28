@@ -37,6 +37,7 @@
 
   //fetch article contents and set article container div
   export async function loadData(mode: GameMode, daily: boolean) {
+    console.log("LOADING");
     if (!articleDiv) return;
     articleLoaded.set(false);
     let articleData: { title: string; text: Record<string, string> };
@@ -200,7 +201,7 @@
   });
 </script>
 
-<div class="article-title">
+<div class="article-title {$articleLoaded ? '' : 'hidden'}">
   {articleTitleShuffled}
   {#if isDaily}
     <div class="daily-splash">DAILY</div>
@@ -219,5 +220,43 @@
 </div>
 
 <style>
-  @import "./articleViewer.css";
+  .article-preview {
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .article-loading {
+    font-size: 2rem;
+    padding-left: 10px;
+  }
+
+  .title-gap {
+    height: 4em;
+  }
+
+  .article-title {
+    position: absolute;
+    width: 100%;
+    left: 135px;
+    width: calc(100% - 135px - 40px);
+    border-bottom: 2px solid rgb(211, 211, 211);
+    font-size: 3em;
+    background-color: rgb(36, 36, 36);
+    z-index: 2;
+  }
+
+  .daily-splash {
+    position: absolute;
+    right: -20px;
+    top: 0px;
+    transform: rotate(30deg);
+    font-size: 1em;
+    color: rgb(194, 137, 15);
+    text-shadow: 0 0 5px rgb(194, 137, 15);
+    cursor: default;
+    pointer-events: none;
+    user-select: none;
+  }
 </style>
