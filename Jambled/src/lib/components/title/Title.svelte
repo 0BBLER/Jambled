@@ -1,4 +1,4 @@
-<!-- this is the cool scrolling main menu title -->
+<!-- this is the super cool scrolling main menu title -->
 
 <script lang="ts">
   import { alphabet } from "$lib/charManager";
@@ -31,24 +31,25 @@
     display: flex;
     flex-direction: row;
     position: absolute;
-    height: 100vh;
+    top: calc(-440px + 10vh * 5); /* this positions the word correctly */
+    height: calc(100vh + 440px + 10vh * 5);
     overflow: hidden;
-    top: 0;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.466) 220px,
+      black 260px,
+      black 370px,
+      rgba(0, 0, 0, 0.466) 410px,
+      rgba(0, 0, 0, 0.103) 600px,
+      transparent 100%
+    );
   }
 
   .title-container::before {
     height: 100%;
     width: 100%;
     position: absolute;
-    background: linear-gradient(
-      360deg,
-      rgba(36, 36, 36, 1) 0%,
-      rgba(36, 36, 36, 0.68) 56%,
-      rgba(3, 3, 3, 0) 62%,
-      rgba(0, 0, 0, 0) 72%,
-      rgba(36, 36, 36, 0.68) 80%,
-      rgba(36, 36, 36, 1) 100%
-    );
     z-index: 2;
     display: block;
     content: "";
