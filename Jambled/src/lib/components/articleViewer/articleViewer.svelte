@@ -248,6 +248,7 @@
     font-size: 3em;
     background-color: rgb(36, 36, 36);
     margin-left: 16px;
+    position: relative;
   }
 
   .daily-splash {
