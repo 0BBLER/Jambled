@@ -10,6 +10,7 @@
   import { Game } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
   import {
+  CLASSIC_UNSET,
     daily,
     loadDailyArticles,
     playedDaily,
@@ -215,7 +216,7 @@
     <!-- highscores info popout -->
     <div class="highscores-info {highscoresToggled ? 'expanded' : ''}">
       <div class="highscore-info">
-        Classic: {$scores.classic == undefined || $scores.classic == -999999
+        Classic: {$scores.classic == undefined || $scores.classic == CLASSIC_UNSET
           ? "no personal best"
           : $scores.classic}
       </div>
@@ -227,7 +228,7 @@
         }}>reset classic</button
       >
       <div class="highscore-info">
-        Speedrun: {$scores.speedrun == undefined || $scores.speedrun == 999999
+        Speedrun: {$scores.speedrun == undefined || $scores.speedrun == SPEEDRUN_UNSET
           ? "no personal best"
           : formatTime($scores.speedrun)}
       </div>
@@ -426,9 +427,5 @@
     bottom: 8px;
     left: 8px;
     text-align: left;
-  }
-
-  #game.dark a {
-    color: rgb(71, 185, 230);
   }
 </style>

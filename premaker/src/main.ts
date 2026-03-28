@@ -1,5 +1,4 @@
 import fs from "fs";
-import pako from "pako";
 
 //wikipedia api endpoint for 500 random articles
 const endpoint =
