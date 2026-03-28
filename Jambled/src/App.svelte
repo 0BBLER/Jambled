@@ -63,14 +63,14 @@
       loadDailyArticles();
   });
 
-  function start() {
+  async function start() {
     if (articleViewer) {
       if (letterPicker) {
         letterPicker.resetValues();
       }
       const isDaily = !playedDaily(selectedMode);
       game.start(selectedMode, isDaily);
-      articleViewer.loadData(selectedMode, isDaily);
+      await articleViewer.loadData(selectedMode, isDaily);
 
       reactiveUserMap = {};
       reactiveUserMap = {

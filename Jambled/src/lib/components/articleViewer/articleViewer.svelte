@@ -37,7 +37,6 @@
 
   //fetch article contents and set article container div
   export async function loadData(mode: GameMode, daily: boolean) {
-    console.log("LOADING");
     if (!articleDiv) return;
     articleLoaded.set(false);
     let articleData: { title: string; text: Record<string, string> };
@@ -61,6 +60,8 @@
     if (articleTitle) {
       game.articleTitle = articleTitle;
     }
+    game.charManager.generate(daily ? (articleTitle ?? "") : ""); //generate map here
+
     articleTitleShuffled = charManager.getShuffled(articleData.title);
     articleDiv.innerHTML = articleData.text["*"];
     cleanArticle();

@@ -1,7 +1,11 @@
+import seedrandom from "seedrandom";
+
 //some fisher-yates
-export function shuffleArr(array: any[]) {
+export function shuffleArr(array: any[], seed: string = "") {
+  let rng = seed == "" ? undefined : seedrandom(seed);
   for (let i = array.length - 1; i > 0; i--) {
-    let k = Math.floor(Math.random() * (i + 1));
+    const random = rng ? rng() : Math.random();
+    let k = Math.floor(random * (i + 1));
     [array[i], array[k]] = [array[k], array[i]];
   }
 }

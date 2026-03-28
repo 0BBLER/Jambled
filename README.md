@@ -33,7 +33,8 @@ npm run preview
 
 ## Noteworthy libraries used
 
-- @hiseb/confetti
+- <a href="https://confettijs.org/">seedrandom</a>
+- <a href="https://www.npmjs.com/package/seedrandom">@hiseb/confetti</a>
 
 ## APIs used
 

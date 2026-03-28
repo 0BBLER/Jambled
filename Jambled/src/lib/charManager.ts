@@ -22,9 +22,9 @@ export class CharManager {
   }
 
   //get a shuffled map
-  private generateMap() {
+  private generateMap(seed: string = "") {
     const shuffled = [...alphabet];
-    shuffleArr(shuffled);
+    shuffleArr(shuffled, seed);
     this.mapKey = {};
     for (let i = 0; i < alphabet.length; i++) {
       this.mapKey[alphabet[i]] = shuffled[i];
@@ -95,8 +95,8 @@ export class CharManager {
   }
 
   //init
-  generate() {
-    this.generateMap();
+  generate(seed: string = "") {
+    this.generateMap(seed);
     this.generateUserMap();
 
     this.generateMasterMap();

@@ -13,23 +13,6 @@ export const SPEEDRUN_UNSET = 99999999;
 //basically this should be removed because now there's a userconfig-type thin in SaveData
 export const userConfig: UserConfig = { darkMode: true };
 
-//localstorage structure
-interface SaveData {
-  scores: {
-    classic: number;
-    speedrun: number;
-  };
-  daily: {
-    classic: number;
-    classicTimestamp: number;
-    speedrun: number;
-    speedrunTimestamp: number;
-  };
-  data: {
-    seenTooltip: boolean;
-  };
-}
-
 let saveData: SaveData = JSON.parse(
   localStorage.getItem("jambledData") ?? "{}",
 );

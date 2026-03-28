@@ -89,7 +89,6 @@ export class Game {
 
   start(mode: GameMode, daily: boolean) {
     this.currentMode = mode;
-    this.charManager.generate();
     this.articleTitle = "";
     this.done = false;
     this.charGuesses = 0;
