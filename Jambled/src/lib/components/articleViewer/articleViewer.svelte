@@ -202,25 +202,30 @@
   });
 </script>
 
-<div class="article-title {$articleLoaded ? '' : 'hidden'}">
-  {articleTitleShuffled}
-  {#if isDaily}
-    <div class="daily-splash">DAILY</div>
-  {/if}
-</div>
-<div class={$articleLoaded ? "article-preview" : "hidden"}>
-  <div class="title-gap"></div>
-  <div
-    bind:this={articleDiv}
-    id={`article`}
-    class={`${userConfig.darkMode ? "dark" : ""}`}
-  ></div>
+<div class="article-wrapper {$articleLoaded ? '' : 'hidden'}">
+  <div class="article-title">
+    {articleTitleShuffled}
+    {#if isDaily}
+      <div class="daily-splash">DAILY</div>
+    {/if}
+  </div>
+  <div class={$articleLoaded ? "article-preview" : "hidden"}>
+    <div
+      bind:this={articleDiv}
+      id={`article`}
+      class={`${userConfig.darkMode ? "dark" : ""}`}
+    ></div>
+  </div>
 </div>
 <div class={$articleLoaded ? "hidden" : "article-loading"}>
   Loading your article...
 </div>
 
 <style>
+  .article-wrapper {
+    min-height: 0;
+  }
+
   .article-preview {
     padding: 16px;
     box-sizing: border-box;
@@ -238,14 +243,11 @@
   }
 
   .article-title {
-    position: absolute;
-    width: 100%;
-    left: 135px;
-    width: calc(100% - 135px - 40px);
+    width: calc(100% - 40px);
     border-bottom: 2px solid rgb(211, 211, 211);
     font-size: 3em;
     background-color: rgb(36, 36, 36);
-    z-index: 2;
+    margin-left: 16px;
   }
 
   .daily-splash {
