@@ -43,6 +43,10 @@ export class CharManager {
   getShuffled(string: string) {
     if (this.game.done) return string;
     if (Object.values(this.masterMap).length < 1) return string;
+    if (string.length == 1) {
+      if(this.masterMap[string]) return this.masterMap[string];
+      return string;
+    }
     return string
       .split("")
       .map((char) => {

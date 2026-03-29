@@ -6,7 +6,7 @@
 
   interface Props {
     charManager: CharManager;
-    setLetterCallback: (from: Letter, to: Letter) => boolean;
+    setLetterCallback: (from: Letter, to: Letter, external: boolean) => boolean;
     userMap: Record<Letter, Letter>;
     game: Game;
   }
@@ -26,7 +26,7 @@
       event.currentTarget.value = lastValues[letter];
     }
     const value = event.currentTarget.value.toUpperCase().substring(0, 1);
-    const set = setLetterCallback(letter, value.toLowerCase());
+    const set = setLetterCallback(letter, value.toLowerCase(), false);
     if (set) {
       event.currentTarget.blur();
       event.currentTarget.value = value;
@@ -35,6 +35,12 @@
     } else {
       event.currentTarget.value = lastValues[letter];
     }
+  }
+
+  //updated letters from somewhere else
+  export function externalUpdateLetter(from: Letter, to: Letter) {
+    lastValues[from] = to.toUpperCase();
+    letterValues[from] = to.toUpperCase();
   }
 
   export function resetValues() {

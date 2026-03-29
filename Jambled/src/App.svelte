@@ -10,7 +10,7 @@
   import { Game } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
   import {
-  CLASSIC_UNSET,
+    CLASSIC_UNSET,
     daily,
     loadDailyArticles,
     playedDaily,
@@ -81,11 +81,19 @@
   }
 
   //callback for when a letter is set
-  function setLetterCallback(from: Letter, to: Letter): boolean {
+  function setLetterCallback(
+    from: Letter,
+    to: Letter,
+    external: boolean,
+  ): boolean {
     const success = game.modUserMap(from, to);
     if (success) {
       reactiveUserMap[from] = to;
       articleViewer?.updateCharacters();
+
+      if (external && letterPicker) {
+        letterPicker.externalUpdateLetter(from, to);
+      }
     }
 
     return success;
@@ -161,6 +169,7 @@
         bind:this={letterPicker}
       ></LetterPicker>
       <ArticleViewer
+        {setLetterCallback}
         done={game.done}
         {game}
         charManager={game.charManager}
@@ -216,7 +225,8 @@
     <!-- highscores info popout -->
     <div class="highscores-info {highscoresToggled ? 'expanded' : ''}">
       <div class="highscore-info">
-        Classic: {$scores.classic == undefined || $scores.classic == CLASSIC_UNSET
+        Classic: {$scores.classic == undefined ||
+        $scores.classic == CLASSIC_UNSET
           ? "no personal best"
           : $scores.classic}
       </div>
@@ -228,7 +238,8 @@
         }}>reset classic</button
       >
       <div class="highscore-info">
-        Speedrun: {$scores.speedrun == undefined || $scores.speedrun == SPEEDRUN_UNSET
+        Speedrun: {$scores.speedrun == undefined ||
+        $scores.speedrun == SPEEDRUN_UNSET
           ? "no personal best"
           : formatTime($scores.speedrun)}
       </div>
@@ -267,15 +278,16 @@
       All the letters in a Wikipedia page have been <span class="important"
         >JAMBLED</span
       >, and you need to correctly guess the original title!<br /> You can
-      <span class="important">UNJAMBLE</span> letters using the left panel, but it'll
-      cost you, and frequently used letters are more expensive.
+      <span class="important">UNJAMBLE</span> letters using the left panel or selecting
+      them in the article and changing them, but it'll cost you, and frequently used
+      letters are more expensive.
     {:else if selectedMode == "speedrun"}
       All the letters in a Wikipedia page have been <span class="important"
         >JAMBLED</span
       >, and you need to correctly guess the original title as
       <span class="important">fast as possible</span>!<br />
       <span class="important">UNJAMBLE</span> the letters at no cost by using the
-      left panel.
+      left panel or by selecting them in the article and changing them.
     {/if}
   </div>
   <button

@@ -1,7 +1,7 @@
 <!-- article viewing pane -->
 <!-- also handles cleaning the article for rendering and hiding contents -->
 <script lang="ts">
-  import { alphabet, CharManager } from "$lib/charManager";
+  import { alphabet, CharManager, type Letter } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
   import {
     articleLoaded,
@@ -15,9 +15,10 @@
     charManager: CharManager;
     game: Game;
     done: boolean;
+    setLetterCallback: (from: Letter, to: Letter, external: boolean) => boolean;
   }
 
-  let { charManager, game, done }: Props = $props();
+  let { charManager, game, done, setLetterCallback }: Props = $props();
 
   let articleDiv = $state<HTMLDivElement>();
   let articleTitle = $state<string>();
@@ -25,7 +26,8 @@
 
   let isDaily = $state(false);
 
-  let textNodes: { node: Node; origValue: string }[] = [];
+  let textElements: { element: HTMLElement; origValue: string }[] = [];
+  let textNodes: Node[] = [];
 
   //clear the contents of the preview pane
   export function clear() {
@@ -33,6 +35,8 @@
     if (articleDiv) {
       articleDiv.innerHTML = "";
     }
+    textElements = [];
+    textNodes = [];
   }
 
   //fetch article contents and set article container div
@@ -98,9 +102,13 @@
     removeBySelector("#Further_reading");
     removeBySelector("#External_links");
 
-    articleDiv.querySelectorAll("a").forEach((element) => {
-      element.href = "javascript:void(0)";
-      element.title = "";
+    //replace links
+    articleDiv.querySelectorAll("a").forEach((anchor) => {
+      const element = document.createElement("span");
+      element.textContent = anchor.textContent;
+      element.classList.add("a");
+      anchor.after(element);
+      anchor.remove();
     });
 
     //abbreviations contain a title for the actual meaning
@@ -158,7 +166,7 @@
     while (current) {
       if (current.nodeValue) {
         //add all nodes to arr so they can be easily changed later
-        textNodes.push({ node: current, origValue: current.nodeValue });
+        textNodes.push(current);
         for (let i = 0; i < current.nodeValue.length; i++) {
           const lower = current.nodeValue[i].toLowerCase();
           if (alphabet.includes(lower)) {
@@ -169,9 +177,17 @@
             freqMap[lower]++;
           }
         }
-        current.nodeValue = charManager.getShuffled(current.nodeValue);
       }
       current = walker.nextNode();
+    }
+
+    for (const node of textNodes) {
+      if (!node.nodeValue || !node.parentElement) return;
+      const span = document.createElement("span");
+      textElements.push({ element: span, origValue: node.nodeValue });
+
+      span.textContent = charManager.getShuffled(node.nodeValue);
+      node.parentElement.replaceChild(span, node);
     }
 
     charManager.setValueMap(freqMap, chars);
@@ -181,11 +197,37 @@
   export function updateCharacters() {
     if (!articleTitle) return;
 
-    textNodes.forEach((tn) => {
-      tn.node.nodeValue = charManager.getShuffled(tn.origValue);
+    textElements.forEach((tn) => {
+      tn.element.textContent = charManager.getShuffled(tn.origValue);
     });
 
     articleTitleShuffled = charManager.getShuffled(articleTitle);
+  }
+
+  //replace letters by selection
+  function articleKeydown(event: KeyboardEvent) {
+    const selection = document.getSelection();
+    if (
+      selection?.focusOffset == undefined ||
+      selection?.anchorOffset == undefined
+    )
+      return;
+    if (Math.abs(selection.focusOffset - selection.anchorOffset) != 1) return;
+    const parent = selection.focusNode?.parentElement;
+    if (!parent) return;
+    const te = textElements.find((element) => element.element == parent);
+    if (!te) return;
+    const origLetter = (
+      selection.direction == "forward"
+        ? te.origValue[selection.anchorOffset]
+        : te.origValue[selection.focusOffset]
+    ).toLowerCase();
+    if (!alphabet.includes(origLetter)) return;
+    const enteredLetter = event.key;
+    if (!alphabet.includes(enteredLetter)) return;
+    const jambledLetter = charManager.mapKey[origLetter];
+    if (!jambledLetter) return;
+    setLetterCallback(jambledLetter, enteredLetter, true);
   }
 
   $effect(() => {
@@ -210,8 +252,12 @@
     {/if}
   </div>
   <div class={$articleLoaded ? "article-preview" : "hidden"}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <div
+      tabindex="0"
       bind:this={articleDiv}
+      onkeydown={articleKeydown}
       id={`article`}
       class={`${userConfig.darkMode ? "dark" : ""}`}
     ></div>
@@ -222,6 +268,10 @@
 </div>
 
 <style>
+  #article {
+    outline: none;
+    border: none;
+  }
   .article-wrapper {
     min-height: 0;
     display: flex;

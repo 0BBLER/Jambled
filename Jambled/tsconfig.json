@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "lib": [
       "dom",
-      "esnext"
+      "esnext",
+      "DOM.Iterable"
     ],
     "strict": true,
     "skipLibCheck": true,
