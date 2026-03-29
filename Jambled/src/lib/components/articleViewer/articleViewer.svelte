@@ -16,9 +16,16 @@
     game: Game;
     done: boolean;
     setLetterCallback: (from: Letter, to: Letter, external: boolean) => boolean;
+    setTitleValueCallback: () => void;
   }
 
-  let { charManager, game, done, setLetterCallback }: Props = $props();
+  let {
+    charManager,
+    game,
+    done,
+    setLetterCallback,
+    setTitleValueCallback,
+  }: Props = $props();
 
   let articleDiv = $state<HTMLDivElement>();
   let articleTitle = $state<string>();
@@ -247,6 +254,9 @@
 
 <div class="article-wrapper {$articleLoaded ? '' : 'hidden'}">
   <div class="article-title">
+    <button onclick={setTitleValueCallback} class="copy-upwards-button"
+      ><img src="images/arrow_left_up.svg" alt="copy title upwards" />copy</button
+    >
     {articleTitleShuffled}
     {#if isDaily}
       <div class="daily-splash">DAILY</div>
@@ -302,6 +312,8 @@
     background-color: rgb(36, 36, 36);
     margin-left: 16px;
     position: relative;
+    display: flex;
+    flex-direction: row;
   }
 
   .daily-splash {
@@ -315,5 +327,12 @@
     cursor: default;
     pointer-events: none;
     user-select: none;
+  }
+  .copy-upwards-button {
+    height: fit-content;
+    align-self: center;
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
   }
 </style>

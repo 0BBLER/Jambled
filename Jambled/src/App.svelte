@@ -37,8 +37,8 @@
   let finishPopup = $state<FinishPopup>();
   let giveUpPopup = $state<GiveUpPopup>();
   let letterPicker = $state<LetterPicker>();
+  let topBar = $state<TopBar>();
   let mainMenuPopup = $state<Modal>();
-  type ModeButtonType = " timer " | " extension ";
   let selectedMode = $state<GameMode>("classic");
 
   let playedClassic = $derived.by<boolean>(() => {
@@ -54,10 +54,6 @@
       new Date().toISOString().substring(0, 10)
     );
   });
-
-  let modeIcon = $derived<ModeButtonType>(
-    selectedMode == "classic" ? " extension " : " timer ",
-  );
 
   onMount(() => {
     if (!playedDaily("classic") || !playedDaily("speedrun"))
@@ -133,19 +129,18 @@
     }
   }
 
+  function setTitleValueCallback() {
+    if (topBar) {
+      topBar.setTitleInput(game.charManager.getShuffled(game.articleTitle));
+    }
+  }
+
   $effect(() => {
     if (finishPopup && game.done) {
       finishPopup.getModal()?.open();
     }
   });
 </script>
-
-<svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=extension,timer,workspace_premium"
-  />
-</svelte:head>
 
 <!-- main game screen -->
 <div
@@ -159,6 +154,7 @@
       giveUpCallback={giveUpButtonPressed}
       {game}
       score={game.score}
+      bind:this={topBar}
     ></TopBar>
     <div class="midsection">
       <LetterPicker
@@ -169,6 +165,7 @@
         bind:this={letterPicker}
       ></LetterPicker>
       <ArticleViewer
+        {setTitleValueCallback}
         {setLetterCallback}
         done={game.done}
         {game}
@@ -197,7 +194,12 @@
         switchGameMode();
         playClick2();
       }}
-      ><div class="material-symbols-outlined mode-icon">{modeIcon}</div>
+    >
+      {#if selectedMode == "classic"}
+        <img width="50px" alt="puzzle piece" src="images/extension.svg" />
+      {:else if selectedMode == "speedrun"}
+        <img width="50px" alt="stopwatch" src="images/timer.svg" />
+      {/if}
       <div class="mode-hint">{selectedMode}</div></button
     >
     <!-- play button -->
@@ -219,8 +221,9 @@
         highscoresToggled = !highscoresToggled;
         playClick2();
       }}
-      ><div class="material-symbols-outlined mode-icon">workspace_premium</div>
-      <div class="mode-hint">best scores</div></button
+    >
+      <img width="50px" alt="medal" src="images/workspace_premium.svg" />
+      <div class="mode-hint">personal bests</div></button
     >
     <!-- highscores info popout -->
     <div class="highscores-info {highscoresToggled ? 'expanded' : ''}">
@@ -296,7 +299,12 @@
       window.open("https://github.com/0BBLER/Jambled");
     }}
     title="open GitHub repository"
-    ><img alt="GitHub logo" width="80px" height="80px" src="github.png" />
+    ><img
+      alt="GitHub logo"
+      width="80px"
+      height="80px"
+      src="images/github.png"
+    />
   </button>
 </div>
 
@@ -338,11 +346,6 @@
     place-items: center;
     justify-content: center;
   }
-
-  .mode-icon {
-    font-size: 3rem !important;
-  }
-
   .mode-hint {
     font-size: 1rem;
   }

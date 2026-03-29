@@ -1,8 +1,8 @@
-const confettiAudio = new Audio("confetti.mp3");
-const clickAudio = new Audio("click.mp3");
-const click2Audio = new Audio("click2.mp3");
-const trumpetAudio = new Audio("trumpet.mp3");
-const noisemakerAudio = new Audio("noisemaker.mp3");
+const confettiAudio = new Audio("sounds/confetti.mp3");
+const clickAudio = new Audio("sounds/click.mp3");
+const click2Audio = new Audio("sounds/click2.mp3");
+const trumpetAudio = new Audio("sounds/trumpet.mp3");
+const noisemakerAudio = new Audio("sounds/noisemaker.mp3");
 
 function playSound(sound: HTMLAudioElement) {
   sound.pause();

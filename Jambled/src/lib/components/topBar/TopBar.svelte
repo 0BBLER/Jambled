@@ -32,6 +32,11 @@
       inputElement.value = "";
     }
   }
+
+  export function setTitleInput(value: string) {
+    if(!inputElement) return;
+    inputElement.value = value;
+  }
 </script>
 
 <div class="top-bar">
