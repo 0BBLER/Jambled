@@ -203,7 +203,6 @@
   //update all the characters in the article
   export function updateCharacters() {
     if (!articleTitle) return;
-    console.log(articleTitle);
 
     textElements.forEach((tn) => {
       tn.element.textContent = charManager.getShuffled(tn.origValue);
@@ -231,7 +230,30 @@
         : te.origValue[selection.focusOffset]
     ).toLowerCase();
     if (!alphabet.includes(origLetter)) return;
-    const enteredLetter = event.key;
+    const enteredLetter = event.key.toLowerCase();
+    if (!alphabet.includes(enteredLetter)) return;
+    const jambledLetter = charManager.mapKey[origLetter];
+    if (!jambledLetter) return;
+    setLetterCallback(jambledLetter, enteredLetter, true);
+  }
+
+  function titleKeydown(event: KeyboardEvent) {
+    const selection = document.getSelection();
+    if (
+      selection?.focusOffset == undefined ||
+      selection?.anchorOffset == undefined
+    )
+      return;
+    if (Math.abs(selection.focusOffset - selection.anchorOffset) != 1) return;
+    const parent = selection.focusNode?.parentElement;
+    if (!parent) return;
+    const origLetter = (
+      selection.direction == "forward"
+        ? game.articleTitle[selection.anchorOffset]
+        : game.articleTitle[selection.focusOffset]
+    ).toLowerCase();
+    if (!alphabet.includes(origLetter)) return;
+    const enteredLetter = event.key.toLowerCase();;
     if (!alphabet.includes(enteredLetter)) return;
     const jambledLetter = charManager.mapKey[origLetter];
     if (!jambledLetter) return;
@@ -255,9 +277,17 @@
 <div class="article-wrapper {$articleLoaded ? '' : 'hidden'}">
   <div class="article-title">
     <button onclick={setTitleValueCallback} class="copy-upwards-button"
-      ><img src="images/arrow_left_up.svg" alt="copy title upwards" />copy</button
+      ><img
+        src="images/arrow_left_up.svg"
+        alt="copy title upwards"
+      />copy</button
     >
-    {articleTitleShuffled}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+    <span style="outline:none" tabindex="0" onkeydown={titleKeydown}>
+      <!-- NOTHING ELSE SHOULD GO IN THIS SPAN, OR IT WILL BREAK TITLEKEYDOWN -->
+      {articleTitleShuffled}
+    </span>
     {#if isDaily}
       <div class="daily-splash">DAILY</div>
     {/if}
