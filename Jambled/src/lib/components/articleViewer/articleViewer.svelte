@@ -35,8 +35,6 @@
     if (articleDiv) {
       articleDiv.innerHTML = "";
     }
-    textElements = [];
-    textNodes = [];
   }
 
   //fetch article contents and set article container div
@@ -84,6 +82,8 @@
   //clean the article by removing a bunch of things
   function cleanArticle() {
     if (!articleDiv) return;
+    textElements = [];
+    textNodes = [];
     //bottom things
     removeBySelector(".reference");
     removeBySelector(".mw-editsection");
@@ -196,6 +196,7 @@
   //update all the characters in the article
   export function updateCharacters() {
     if (!articleTitle) return;
+    console.log(articleTitle);
 
     textElements.forEach((tn) => {
       tn.element.textContent = charManager.getShuffled(tn.origValue);
