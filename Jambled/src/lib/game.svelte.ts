@@ -1,8 +1,20 @@
 import confetti from "@hiseb/confetti";
 import { CharManager, Letter } from "./charManager";
 import { ToastManager } from "./toastManager";
-import { articleLoaded, setDailyData, SPEEDRUN_UNSET, trySetHighscore } from "./store.svelte";
+import {
+  articleLoaded,
+  setDailyData,
+  SPEEDRUN_UNSET,
+  trySetHighscore,
+} from "./store.svelte";
 import { playConfetti, playNoisemaker } from "./sounds";
+
+export const scoringRules = {
+  title: -1000,
+  win: 10000,
+  charAdditive: -10,
+  charWeighting: 4000,
+} as const;
 
 export class Game {
   toastManager: ToastManager = new ToastManager();
@@ -24,12 +36,6 @@ export class Game {
   isDaily: boolean;
 
   elapsedTime = $state(0);
-
-  scoringRules = {
-    title: -1000,
-    win: 10000,
-    charAdditive: -10,
-  } as const;
 
   constructor() {
     this.charManager = new CharManager(this);
@@ -70,9 +76,9 @@ export class Game {
   updateScore(toast: boolean) {
     if (this.currentMode == "classic") {
       this.score =
-        (this.done && !this.wonGame ? 0 : this.scoringRules.win) +
+        (this.done && !this.wonGame ? 0 : scoringRules.win) +
         this.charsCost +
-        this.titleGuesses * this.scoringRules.title;
+        this.titleGuesses * scoringRules.title;
       if (toast && this.score != this.previousScore) {
         const difference = this.score - this.previousScore;
         const negative = difference < 0;
@@ -210,7 +216,7 @@ export class Game {
     let charIdx = 0;
     const cost = this.guessedChars.reduce((acc, curr) => {
       let val = acc - this.charManager.valueMap[curr];
-      val += this.scoringRules.charAdditive * charIdx;
+      val += scoringRules.charAdditive * charIdx;
       charIdx++;
       return val;
     }, 0);

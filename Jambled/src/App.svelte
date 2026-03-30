@@ -7,7 +7,7 @@
   import Modal from "$lib/components/modal/Modal.svelte";
   import Title from "$lib/components/title/Title.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
-  import { Game } from "$lib/game.svelte";
+  import { Game, scoringRules } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
   import {
     CLASSIC_UNSET,
@@ -32,7 +32,8 @@
     ...game.charManager.userMap,
   });
   let showTitleScreen = $state(true);
-  let instructionsToggled = $state(false);
+  type HowToState = "none" | "play" | "scoring";
+  let instructionsToggled = $state<HowToState>("none");
   let highscoresToggled = $state(false);
   let finishPopup = $state<FinishPopup>();
   let giveUpPopup = $state<GiveUpPopup>();
@@ -269,29 +270,69 @@
       </div>
     </div>
   </div>
-  <button
-    class="z-up big-button how-button"
-    onclick={() => {
-      instructionsToggled = !instructionsToggled;
-      playClick2();
-    }}>How to play</button
-  >
-  <div class="z-up play-info {instructionsToggled ? 'expanded' : ''}">
-    {#if selectedMode == "classic"}
-      All the letters in a Wikipedia page have been <span class="important"
-        >JAMBLED</span
-      >, and you need to correctly guess the original title!<br /> You can
-      <span class="important">UNJAMBLE</span> letters using the left panel or selecting
-      them in the article and changing them, but it'll cost you, and frequently used
-      letters are more expensive.
-    {:else if selectedMode == "speedrun"}
-      All the letters in a Wikipedia page have been <span class="important"
-        >JAMBLED</span
-      >, and you need to correctly guess the original title as
-      <span class="important">fast as possible</span>!<br />
-      <span class="important">UNJAMBLE</span> the letters at no cost by using the
-      left panel or by selecting them in the article and changing them.
-    {/if}
+  <div class="z-up how-buttonset">
+    <button
+      class="big-button how-button"
+      onclick={() => {
+        if (instructionsToggled == "play") {
+          instructionsToggled = "none";
+        } else {
+          instructionsToggled = "play";
+        }
+        playClick2();
+      }}>How to play</button
+    >
+    <button
+      class="big-button how-button"
+      onclick={() => {
+        if (instructionsToggled == "scoring") {
+          instructionsToggled = "none";
+        } else {
+          instructionsToggled = "scoring";
+        }
+        playClick2();
+      }}>Scoring info</button
+    >
+  </div>
+  <div class="play-info {instructionsToggled == 'play' ? 'expanded' : ''}">
+    <div
+      class="info-inner {instructionsToggled == 'scoring' ? 'expanded' : ''}"
+    >
+      {#if selectedMode == "classic"}
+        All the letters in a Wikipedia page have been <span class="important"
+          >JAMBLED</span
+        >, and you need to correctly guess the original title!<br /> You can
+        <span class="important">UNJAMBLE</span> letters using the left panel or selecting
+        them in the article and changing them, but it'll cost you. See scoring info
+        for more information.
+      {:else if selectedMode == "speedrun"}
+        All the letters in a Wikipedia page have been <span class="important"
+          >JAMBLED</span
+        >, and you need to correctly guess the original title as
+        <span class="important">fast as possible</span>!<br />
+        <span class="important">UNJAMBLE</span> the letters at no cost by using the
+        left panel or by selecting them in the article and changing them.
+      {/if}
+    </div>
+  </div>
+  <div class="play-info {instructionsToggled == 'scoring' ? 'expanded' : ''}">
+    <div
+      class="info-inner {instructionsToggled == 'scoring' ? 'expanded' : ''}"
+    >
+      {#if selectedMode == "classic"}
+        Every letter has a cost for how expensive it will be to change based on
+        <span class="important">how frequently they appear in the article</span
+        >. This means that changing a more common letter is more expensive than
+        an uncommon one. Every additional guess increases cost by {Math.abs(
+          scoringRules.charAdditive,
+        )}. A win provides 10000 score.
+        <br /><br />letter cost = letter percentage of total article × {scoringRules.charWeighting}
+        + guess # × {Math.abs(scoringRules.charAdditive)}
+      {:else if selectedMode == "speedrun"}
+        <span class="important">No score, just time!</span> The timer begins as soon
+        as the article finishes loading.
+      {/if}
+    </div>
   </div>
   <button
     class="github-button"
@@ -327,6 +368,12 @@
     box-shadow: 0 0 12px rgb(121, 121, 121);
   }
 
+  .how-buttonset {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
   .play-button {
     box-shadow: 0 0 12px rgb(121, 121, 121);
   }
@@ -346,27 +393,42 @@
     place-items: center;
     justify-content: center;
   }
+
   .mode-hint {
     font-size: 1rem;
   }
 
   .play-info {
-    font-size: 2rem;
-    max-width: 640px;
+    font-size: 1.6rem;
+    max-width: 670px;
+    display: grid;
+    grid-template-rows: 0fr;
     overflow: hidden;
-    height: 0;
-    transition: height 500ms ease-in-out;
+    transition: grid-template-rows 500ms ease-in-out;
     text-align: center;
     color: rgb(175, 175, 175);
+    line-height: 2.2rem;
+    z-index: 1;
+  }
+
+  .info-inner {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+  }
+
+  .info-inner.expanded {
+    overflow: auto;
+    height: 100%;
   }
 
   .play-info.expanded {
-    height: 300px;
+    grid-template-rows: 1fr;
+    overflow-y: auto;
   }
 
   .play-info .important {
     font-weight: bold;
-    font-size: 2.1rem;
+    font-size: 1.7rem;
     color: rgb(204, 204, 204);
     text-shadow: 0 0 3px white;
   }

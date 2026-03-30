@@ -41,4 +41,8 @@ npm run preview
 - <a href="https://www.mediawiki.org/wiki/API:Action_API">Wikipedia API</a>
 - <a href="https://time.now">World Time API by Time.Now</a>
 
+## Future updates
+- Category selector
+- Changed letters colours
+
 ### Jambled is not affiliated with Wikipedia

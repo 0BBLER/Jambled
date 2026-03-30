@@ -2,7 +2,7 @@
 <!-- triggers on win and give up -->
 <!-- contains information about the game -->
 <script lang="ts">
-  import { Game } from "$lib/game.svelte";
+  import { Game, scoringRules } from "$lib/game.svelte";
   import { formatTime } from "$lib/utils";
   import Modal from "../modal/Modal.svelte";
 
@@ -73,11 +73,11 @@
       <div>
         <span class="score-negative">{game.charsCost}</span>
         from {game.charGuesses}
-        character guess{game.charGuesses == 1 ? "" : "es"}
+        letter change{game.charGuesses == 1 ? "" : "s"}
       </div>
       <div>
         <span class="score-negative"
-          >{game.titleGuesses * game.scoringRules.title}</span
+          >{game.titleGuesses * scoringRules.title}</span
         >
         from {game.titleGuesses} incorrect title guess{game.titleGuesses == 1
           ? ""
@@ -85,7 +85,7 @@
       </div>
       <div>
         {#if game.wonGame}
-          <span class="score-positive">+{game.scoringRules.win}</span> from 1 win
+          <span class="score-positive">+{scoringRules.win}</span> from 1 win
         {:else}
           <span class="score-negative">0</span> from 1 forfeit
         {/if}

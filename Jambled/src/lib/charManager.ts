@@ -1,7 +1,5 @@
-import { Game } from "./game.svelte";
+import { Game, scoringRules } from "./game.svelte";
 import { shuffleArr } from "./utils";
-
-const charWeighting = 4000;
 
 //prettier-ignore
 export const alphabet : string[] = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"] as const;
@@ -94,7 +92,7 @@ export class CharManager {
   //weight the different letters based on their frequency in the article
   setValueMap(map: Record<string, number>, charCount: number) {
     for (const [key, value] of Object.entries(map)) {
-      this.valueMap[key] = (value / charCount) * charWeighting;
+      this.valueMap[key] = (value / charCount) * scoringRules.charWeighting;
     }
   }
 

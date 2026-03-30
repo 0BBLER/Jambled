@@ -46,6 +46,7 @@
 
     --letter-spacing: 8rem;
     --letter-size: calc(var(--letter-spacing) + 2rem);
+    z-index: 0;
   }
 
   .title-container::before {
