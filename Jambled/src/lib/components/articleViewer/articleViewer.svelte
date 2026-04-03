@@ -3,6 +3,7 @@
 <script lang="ts">
   import { alphabet, CharManager, type Letter } from "$lib/charManager";
   import { Game } from "$lib/game.svelte";
+  import { playClick2 } from "$lib/sounds";
   import {
     articleLoaded,
     classicDailyArticle,
@@ -235,6 +236,7 @@
     const jambledLetter = charManager.mapKey[origLetter];
     if (!jambledLetter) return;
     setLetterCallback(jambledLetter, enteredLetter, true);
+    playClick2();
   }
 
   function titleKeydown(event: KeyboardEvent) {
@@ -258,6 +260,7 @@
     const jambledLetter = charManager.mapKey[origLetter];
     if (!jambledLetter) return;
     setLetterCallback(jambledLetter, enteredLetter, true);
+    playClick2();
   }
 
   $effect(() => {

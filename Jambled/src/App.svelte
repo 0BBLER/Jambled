@@ -351,7 +351,7 @@
 
 <style>
   .title-screen {
-    font-family: "Sansation", sans-serif;
+    font-family: inherit;
     color: rgb(204, 204, 204);
     background-color: rgb(36, 36, 36);
     display: flex;
@@ -434,7 +434,6 @@
   }
 
   #game {
-    font-family: "Sansation", sans-serif;
     line-height: 1.6;
     padding: 16px 16px 8px 16px;
     display: flex;
