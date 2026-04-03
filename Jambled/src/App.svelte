@@ -188,6 +188,8 @@
   <Title></Title>
   <div style="height: 300px"></div>
   <div class="z-up play-buttons-container">
+    <!-- this fixes weird spacing due to the flex gap and the sliding highscores -->
+    <div style="width: 0;">&nbsp;</div>
     <!-- gamemode button -->
     <button
       class="big-button mode-button"
@@ -255,24 +257,11 @@
         }}>reset speedrun</button
       >
     </div>
-    <!-- daily personal score -->
-    <div class="daily-scores-info">
-      <div class="daily-scores-title">Your daily scores</div>
-      <div>
-        Classic: {playedClassic ? $daily.classic : "unplayed"}
-      </div>
-      <div>
-        Speedrun: {playedSpeedrun
-          ? $daily.speedrun == SPEEDRUN_UNSET
-            ? "forfeited"
-            : formatTime($daily.speedrun)
-          : "unplayed"}
-      </div>
-    </div>
   </div>
   <div class="z-up how-buttonset">
     <button
       class="big-button how-button"
+      style="margin-left: auto"
       onclick={() => {
         if (instructionsToggled == "play") {
           instructionsToggled = "none";
@@ -334,6 +323,21 @@
       {/if}
     </div>
   </div>
+  <!-- daily personal score -->
+  <div class="daily-scores-info">
+    <div class="daily-scores-title">Your daily scores</div>
+    <div>
+      Classic: {playedClassic ? $daily.classic : "unplayed"}
+    </div>
+    <div>
+      Speedrun: {playedSpeedrun
+        ? $daily.speedrun == SPEEDRUN_UNSET
+          ? "forfeited"
+          : formatTime($daily.speedrun)
+        : "unplayed"}
+    </div>
+  </div>
+  <!-- repo link -->
   <button
     class="github-button"
     onclick={() => {
@@ -360,18 +364,18 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    gap: 12px;
+    gap: 20px;
   }
 
   .how-button {
     font-size: 2rem !important;
-    box-shadow: 0 0 12px rgb(121, 121, 121);
+    box-shadow: 0 0 7px rgb(121, 121, 121);
   }
 
   .how-buttonset {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 20px;
   }
 
   .play-button {
@@ -480,7 +484,7 @@
   }
 
   .highscores-info.expanded {
-    max-width: 200px;
+    max-width: 230px;
   }
 
   .highscore-info {

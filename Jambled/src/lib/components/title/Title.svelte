@@ -29,23 +29,25 @@
   .title-container {
     display: flex;
     flex-direction: row;
+    gap: 40px;
     position: absolute;
-    top: calc(-440px + 10vh * 5); /* this positions the word correctly */
-    height: calc(100vh + 440px + 10vh * 5);
+    top: calc(-520px + 10vh * 5); /* this positions the word correctly */
+    height: calc(100vh + 520px + 10vh * 5);
     overflow: hidden;
     mask-image: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(0, 0, 0, 0.466) 220px,
-      black 260px,
-      black 370px,
-      rgba(0, 0, 0, 0.466) 410px,
+      transparent 60px,
+      rgba(0, 0, 0, 0.466) 250px,
+      black 320px,
+      black 390px,
+      rgba(0, 0, 0, 0.466) 450px,
       rgba(0, 0, 0, 0.103) 600px,
-      transparent calc(100% - (440px + 10vh * 5)) /* bottom */
+      transparent calc(100% - (520px + 10vh * 5)) /* bottom */
     );
 
-    --letter-spacing: 8rem;
-    --letter-size: calc(var(--letter-spacing) + 2rem);
+    --letter-spacing: 9rem;
+    --letter-size: calc(var(--letter-spacing) + 3rem);
     z-index: 0;
   }
 
