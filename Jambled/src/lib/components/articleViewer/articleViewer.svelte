@@ -206,7 +206,14 @@
     if (!articleTitle) return;
 
     textElements.forEach((tn) => {
-      tn.element.textContent = charManager.getShuffled(tn.origValue);
+      const shuffledVal = charManager.getShuffled(tn.origValue);
+      const textNode = tn.element.firstChild;
+
+      if (textNode && textNode.nodeType == Node.TEXT_NODE) { //I think setting nodevalue is better
+        textNode.nodeValue = shuffledVal;
+      } else {
+        tn.element.textContent = shuffledVal;
+      }
     });
 
     articleTitleShuffled = charManager.getShuffled(articleTitle);
@@ -220,8 +227,7 @@
       selection?.anchorOffset == undefined
     )
       return;
-    if (Math.abs(selection.focusOffset - selection.anchorOffset) != 1) return;
-    const parent = selection.focusNode?.parentElement;
+    const parent = selection.anchorNode?.parentElement;
     if (!parent) return;
     const te = textElements.find((element) => element.element == parent);
     if (!te) return;
@@ -237,6 +243,8 @@
     if (!jambledLetter) return;
     setLetterCallback(jambledLetter, enteredLetter, true);
     playClick2();
+
+    selection.removeAllRanges();
   }
 
   function titleKeydown(event: KeyboardEvent) {
@@ -246,7 +254,6 @@
       selection?.anchorOffset == undefined
     )
       return;
-    if (Math.abs(selection.focusOffset - selection.anchorOffset) != 1) return;
     const parent = selection.focusNode?.parentElement;
     if (!parent) return;
     const origLetter = (
@@ -261,6 +268,7 @@
     if (!jambledLetter) return;
     setLetterCallback(jambledLetter, enteredLetter, true);
     playClick2();
+    selection.removeAllRanges();
   }
 
   $effect(() => {
