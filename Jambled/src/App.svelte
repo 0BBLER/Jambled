@@ -130,9 +130,14 @@
     }
   }
 
-  function setTitleValueCallback() {
+  function setTitleValueCallback(submit: boolean) {
     if (topBar) {
       topBar.setTitleInput(game.charManager.getShuffled(game.articleTitle));
+      if (submit) {
+        if (!game.guessTitle(game.charManager.getShuffled(game.articleTitle))) {
+          topBar.startGuessInputShake();
+        }
+      }
     }
   }
 

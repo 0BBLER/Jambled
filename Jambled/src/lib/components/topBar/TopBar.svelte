@@ -24,18 +24,28 @@
   }: Props = $props();
 
   let inputElement = $state<HTMLInputElement>();
+  let guessInputShake = $state(false);
 
   function inputKeydown(event: KeyboardEvent) {
     if (!inputElement?.value || game.done) return;
     if (event.key == "Enter") {
-      game.guessTitle(inputElement.value);
+      if (!game.guessTitle(inputElement.value)) {
+        startGuessInputShake();
+      }
       inputElement.value = "";
     }
   }
 
   export function setTitleInput(value: string) {
-    if(!inputElement) return;
+    if (!inputElement) return;
     inputElement.value = value;
+  }
+
+  export function startGuessInputShake() {
+    guessInputShake = false;
+    setTimeout(() => {
+      guessInputShake = true;
+    }, 0);
   }
 </script>
 
@@ -62,7 +72,7 @@
       autocorrect="off"
       autocomplete="off"
       spellcheck="false"
-      class="guess-input"
+      class="guess-input {guessInputShake ? 'title-shake-animation' : ''}"
       placeholder="Enter title guess here"
       onkeydown={inputKeydown}
     />
@@ -189,5 +199,34 @@
 
   .elapsed-time-container {
     min-width: 300px;
+  }
+
+  .title-shake-animation {
+    animation: guess-shake 300ms ease;
+  }
+
+  @keyframes guess-shake {
+    0% {
+      border-bottom: 3px solid rgba(228, 228, 228, 0.89);
+    }
+
+    25% {
+      border-bottom: 3px solid rgba(236, 6, 6, 0.89);
+      transform: translateX(-4px);
+    }
+
+    50% {
+      border-bottom: 3px solid rgba(236, 6, 6, 0.89);
+      transform: translateX(4px);
+    }
+
+    75% {
+      border-bottom: 3px solid rgba(236, 6, 6, 0.89);
+      transform: translateX(-4px);
+    }
+
+    100% {
+      border-bottom: 3px solid rgba(228, 228, 228, 0.89);
+    }
   }
 </style>

@@ -187,9 +187,11 @@ export class Game {
       }) == 0;
     if (compare) {
       this.win();
+      return true;
     } else {
       this.titleGuesses = this.titleGuesses + 1;
       this.updateScore(true);
+      return false;
     }
   }
 

@@ -17,7 +17,7 @@
     game: Game;
     done: boolean;
     setLetterCallback: (from: Letter, to: Letter, external: boolean) => boolean;
-    setTitleValueCallback: () => void;
+    setTitleValueCallback: (submit: boolean) => void;
   }
 
   let {
@@ -255,7 +255,7 @@
         : game.articleTitle[selection.focusOffset]
     ).toLowerCase();
     if (!alphabet.includes(origLetter)) return;
-    const enteredLetter = event.key.toLowerCase();;
+    const enteredLetter = event.key.toLowerCase();
     if (!alphabet.includes(enteredLetter)) return;
     const jambledLetter = charManager.mapKey[origLetter];
     if (!jambledLetter) return;
@@ -279,10 +279,28 @@
 
 <div class="article-wrapper {$articleLoaded ? '' : 'hidden'}">
   <div class="article-title">
-    <button onclick={setTitleValueCallback} class="copy-upwards-button"
+    <button
+      onclick={() => {
+        setTitleValueCallback(true);
+      }}
+      class="copy-upwards-button"
+      ><img
+        src="images/upload.svg"
+        alt="submit current title"
+        width="30px"
+        height="30px"
+      />submit</button
+    >
+    <button
+      onclick={() => {
+        setTitleValueCallback(false);
+      }}
+      class="copy-upwards-button"
       ><img
         src="images/arrow_left_up.svg"
         alt="copy title upwards"
+        width="30px"
+        height="30px"
       />copy</button
     >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -364,8 +382,9 @@
   .copy-upwards-button {
     height: fit-content;
     align-self: center;
-    margin-right: 20px;
+    margin-right: 10px;
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 </style>
