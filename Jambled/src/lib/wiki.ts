@@ -51,7 +51,7 @@ async function getRandomWikiArticle() {
    * take 10 longest
    */
   const filtered = Object.values(articles)
-    .filter((article) => !article.title.includes("disambiguation"))
+    .filter((article) => article.title && !article.title.includes("disambiguation"))
     .toSorted((a, b) => b.length - a.length)
     .slice(0, 10);
 

@@ -11,6 +11,7 @@
     userConfig,
   } from "$lib/store.svelte";
   import { getArticleData } from "$lib/wiki";
+  import ts from "typescript";
 
   interface Props {
     charManager: CharManager;
@@ -34,8 +35,35 @@
 
   let isDaily = $state(false);
 
-  let textElements: { element: HTMLElement; origValue: string }[] = [];
+  interface TextElement {
+    element: HTMLElement;
+    origValue: string;
+  }
+
+  let textElements: TextElement[] = [];
   let textNodes: Node[] = [];
+
+  interface LetterReplacement {
+    orig: Letter;
+    origJambled: Letter;
+    origUserJambled: Letter;
+    to: Letter;
+    changed: boolean;
+  }
+
+  interface ReplacerBoxData {
+    rawValue: string;
+    te: TextElement;
+    replacementContainer: HTMLSpanElement;
+    left: HTMLSpanElement;
+    inputBox: HTMLInputElement;
+    right: HTMLSpanElement;
+    replaceIndex: 0;
+    inputBoxContainer: HTMLSpanElement;
+    replacements: LetterReplacement[];
+  }
+
+  let replacerBoxData: ReplacerBoxData | null = null;
 
   //clear the contents of the preview pane
   export function clear() {
@@ -209,7 +237,8 @@
       const shuffledVal = charManager.getShuffled(tn.origValue);
       const textNode = tn.element.firstChild;
 
-      if (textNode && textNode.nodeType == Node.TEXT_NODE) { //I think setting nodevalue is better
+      if (textNode && textNode.nodeType == Node.TEXT_NODE) {
+        //I think setting nodevalue is better
         textNode.nodeValue = shuffledVal;
       } else {
         tn.element.textContent = shuffledVal;
@@ -221,6 +250,7 @@
 
   //replace letters by selection
   function articleKeydown(event: KeyboardEvent) {
+    event.preventDefault();
     const selection = document.getSelection();
     if (
       selection?.focusOffset == undefined ||
@@ -235,7 +265,8 @@
       selection.direction == "forward"
         ? te.origValue[selection.anchorOffset]
         : te.origValue[selection.focusOffset]
-    ).toLowerCase();
+    )?.toLowerCase();
+    if (!origLetter) return;
     if (!alphabet.includes(origLetter)) return;
     const enteredLetter = event.key.toLowerCase();
     if (!alphabet.includes(enteredLetter)) return;
@@ -245,6 +276,246 @@
     playClick2();
 
     selection.removeAllRanges();
+  }
+
+  function articleClick(event: MouseEvent) {
+    if (event.ctrlKey) return;
+    const selection = document.getSelection();
+    if (!selection) return;
+    if(Math.abs(selection.focusOffset - selection.anchorOffset) > 0) return;
+    const parent = selection.anchorNode?.parentElement;
+    if (!parent) return;
+    const te = textElements.find((element) => element.element == parent);
+    if (!te) return;
+    //set indexes and expand outwards
+    const endChar = selection.focusOffset;
+    let wordStart = endChar;
+    let wordEnd = endChar;
+    const origValue = te.origValue;
+    if (!alphabet.includes(origValue[wordStart].toLowerCase())) {
+      return;
+    }
+    //find word start index
+    while (
+      wordStart > 0 &&
+      alphabet.includes(origValue[wordStart - 1].toLowerCase())
+    ) {
+      wordStart--;
+    }
+    //word end index
+    while (
+      wordEnd < origValue.length - 1 &&
+      alphabet.includes(origValue[wordEnd + 1].toLowerCase())
+    ) {
+      wordEnd++;
+    }
+    createReplacerBox(te, wordStart, wordEnd + 1);
+  }
+
+  function createReplacerBox(
+    element: TextElement,
+    startIndex: number,
+    endIndex: number,
+  ) {
+    if (replacerBoxData) {
+      removeReplacerBox();
+      return;
+    }
+    const origString = element.origValue.slice(startIndex, endIndex);
+    const newContainer = document.createElement("span");
+
+    const left = document.createElement("span");
+    left.textContent = game.charManager.getShuffled(
+      element.origValue.slice(0, startIndex),
+    );
+
+    const inputBoxContainer = document.createElement("span");
+    inputBoxContainer.classList.add("replacer-container");
+    function updateInputPlaceholder() {
+      if (!inputBoxContainer || !replacerBoxData) return;
+      inputBoxContainer.style.setProperty(
+        "--replacer-placeholder",
+        `"${game.charManager.getShuffled(
+          `${" ".repeat(replacerBoxData.replaceIndex)}${element.origValue.slice(startIndex + replacerBoxData.replaceIndex, endIndex + 1)}`,
+        )}"`,
+      );
+    }
+
+    const inputBox = document.createElement("input");
+    inputBox.size = endIndex - startIndex;
+    inputBox.classList.add("replacer-input");
+    inputBox.autocorrect = false;
+    inputBox.autocomplete = "off";
+    inputBox.autocapitalize = "off";
+
+    inputBoxContainer.appendChild(inputBox);
+
+    const right = document.createElement("span");
+    right.textContent = game.charManager.getShuffled(
+      element.origValue.slice(endIndex),
+    );
+
+    newContainer.appendChild(left);
+    newContainer.appendChild(inputBoxContainer);
+    newContainer.appendChild(right);
+
+    element.element.replaceWith(newContainer);
+
+    inputBox.focus();
+
+    replacerBoxData = {
+      te: element,
+      rawValue: origString,
+      replacementContainer: newContainer,
+      inputBoxContainer,
+      left,
+      inputBox,
+      right,
+      replaceIndex: 0,
+      replacements: [],
+    };
+
+    updateInputPlaceholder();
+
+    /* typing in box event */
+    inputBox.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (!replacerBoxData) return;
+
+      if (event.key === "Escape") {
+        removeReplacerBox();
+        return;
+      }
+
+      event.stopPropagation();
+      event.preventDefault();
+
+      if (event.key === "Backspace") {
+        if (replacerBoxData.replaceIndex < 1) {
+          removeReplacerBox();
+          return;
+        }
+        const target = event.currentTarget as HTMLInputElement;
+        target.value = target.value.slice(0, replacerBoxData.replaceIndex - 1);
+
+        //undo replacement
+        const replacement = replacerBoxData.replacements.pop();
+        if (replacement && replacement.changed) {
+          //THIS WONT WORK ANYMORE BECAUSE OF CAPITALIZATION OF ORIG
+          setLetterCallback(
+            replacement.origJambled,
+            replacement.origUserJambled.toLowerCase(),
+            true,
+          );
+        }
+
+        replacerBoxData.replaceIndex--;
+
+        updateInputPlaceholder();
+        return;
+      }
+
+      function invalidKey() {
+        if (!replacerBoxData) return;
+        const target = event.currentTarget as HTMLInputElement;
+        const rawOrig = replacerBoxData.rawValue[replacerBoxData.replaceIndex];
+        target.value = target.value + charManager.getShuffled(rawOrig);
+
+        replacerBoxData.replacements.push({
+          orig: rawOrig,
+          origJambled: "",
+          to: "",
+          origUserJambled: "",
+          changed: false,
+        });
+
+        finishInputEvent();
+      }
+
+      function finishInputEvent() {
+        if (!replacerBoxData) return;
+        replacerBoxData.replaceIndex++;
+        updateInputPlaceholder();
+
+        const newValue = charManager.getShuffled(
+          replacerBoxData.replacements
+            .map((replacement) => replacement.orig)
+            .join(""),
+        );
+
+        replacerBoxData.inputBox.value = newValue;
+
+        if (replacerBoxData.replaceIndex >= replacerBoxData.rawValue.length) {
+          /* reaching the end of the box */
+          removeReplacerBox();
+        }
+      }
+
+      let key = event.key.toLocaleLowerCase();
+
+      if (alphabet.includes(key)) {
+        const replacingOrig =
+          replacerBoxData.rawValue[replacerBoxData.replaceIndex];
+        const jambledLetter = charManager.mapKey[replacingOrig.toLowerCase()];
+        const origUserJamble = charManager.getShuffled(replacingOrig);
+
+        if (jambledLetter) {
+          if (
+            setLetterCallback(
+              jambledLetter,
+              key.toLowerCase() /* key might have been recapitalized earlier */,
+              true,
+            )
+          ) {
+            const isCapital = replacingOrig.toUpperCase() === replacingOrig;
+            if (isCapital) key = key.toUpperCase();
+            const target = event.currentTarget as HTMLInputElement;
+            target.value = target.value + key;
+
+            replacerBoxData.replacements.push({
+              orig: replacingOrig,
+              origJambled: jambledLetter,
+              origUserJambled: origUserJamble,
+              to: key,
+              changed: true,
+            });
+            playClick2();
+
+            finishInputEvent();
+          } else {
+            invalidKey();
+            return;
+          }
+        } else {
+          invalidKey();
+          return;
+        }
+      } else {
+        invalidKey();
+        return;
+      }
+    });
+    inputBox.addEventListener("blur", () => {
+      if (!replacerBoxData) return;
+
+      removeReplacerBox();
+    });
+  }
+
+  function removeReplacerBox() {
+    if (!replacerBoxData) return;
+    const newSpan = document.createElement("span");
+    newSpan.textContent = game.charManager.getShuffled(
+      replacerBoxData.te.origValue,
+    );
+    replacerBoxData.left.remove();
+    replacerBoxData.right.remove();
+    try {
+      replacerBoxData.inputBox.remove();
+      replacerBoxData.inputBoxContainer.remove();
+      replacerBoxData.replacementContainer.replaceWith(newSpan);
+      replacerBoxData.te.element = newSpan;
+    } catch {}
+    replacerBoxData = null;
   }
 
   function titleKeydown(event: KeyboardEvent) {
@@ -328,6 +599,7 @@
       tabindex="0"
       bind:this={articleDiv}
       onkeydown={articleKeydown}
+      onclick={articleClick}
       id={`article`}
       class={`${userConfig.darkMode ? "dark" : ""}`}
     ></div>

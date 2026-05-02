@@ -170,3 +170,34 @@ button:hover {
 .give-up-popup-container {
   text-align: center;
 }
+
+/* replacer box */
+
+.replacer-input {
+  padding: 0;
+  outline: none;
+  font-family: inherit;
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.replacer-container {
+  position: relative;
+
+}
+
+.replacer-container::after {
+  display: block;
+  content: var(--replacer-placeholder);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  opacity: 0.6;
+  transform: translateY(-4px);
+}

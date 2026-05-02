@@ -42,7 +42,14 @@ export class CharManager {
     if (this.game.done) return string;
     if (Object.values(this.masterMap).length < 1) return string;
     if (string.length == 1) {
-      if(this.masterMap[string]) return this.masterMap[string];
+      const lowercase = string.toLowerCase();
+      if (lowercase == string) {
+        const found = this.masterMap[string];
+        if (found) return found;
+      } else {
+        const found = this.masterMap[lowercase];
+        if (found) return found.toUpperCase();
+      }
       return string;
     }
     return string
