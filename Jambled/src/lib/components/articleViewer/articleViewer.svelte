@@ -282,7 +282,7 @@
     if (event.ctrlKey) return;
     const selection = document.getSelection();
     if (!selection) return;
-    if(Math.abs(selection.focusOffset - selection.anchorOffset) > 0) return;
+    if (Math.abs(selection.focusOffset - selection.anchorOffset) > 0) return;
     const parent = selection.anchorNode?.parentElement;
     if (!parent) return;
     const te = textElements.find((element) => element.element == parent);
@@ -383,6 +383,13 @@
 
       if (event.key === "Escape") {
         removeReplacerBox();
+        return;
+      }
+
+      /* ignore these keys that some people might be pressing */
+      if (event.key === "Shift" || event.key == "CapsLock") {
+        event.stopPropagation();
+        event.preventDefault();
         return;
       }
 
