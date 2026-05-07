@@ -134,6 +134,7 @@
   }
 
   function setTitleValueCallback(submit: boolean) {
+    if(game.done) return;
     if (topBar) {
       topBar.setTitleInput(game.charManager.getShuffled(game.articleTitle));
       if (submit) {
