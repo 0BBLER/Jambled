@@ -31,13 +31,14 @@
 
   let articleDiv = $state<HTMLDivElement>();
   let articleTitle = $state<string>();
-  let articleTitleShuffled = $state<string>();
 
   let isDaily = $state(false);
+  let titleParent = $state<HTMLSpanElement>();
 
   interface TextElement {
     element: HTMLElement;
     origValue: string;
+    isTitle?: boolean;
   }
 
   let textElements: TextElement[] = [];
@@ -100,7 +101,6 @@
     }
     game.charManager.generate(daily ? (articleTitle ?? "") : ""); //generate map here
 
-    articleTitleShuffled = charManager.getShuffled(articleData.title);
     articleDiv.innerHTML = articleData.text["*"];
     cleanArticle();
     isDaily = daily;
@@ -226,6 +226,18 @@
       node.parentElement.replaceChild(span, node);
     }
 
+    //add title as te
+    if (titleParent && titleParent.children[0] && articleTitle) {
+      const titleSpan = titleParent.children[0] as HTMLSpanElement;
+      textElements.push({
+        element: titleSpan,
+        origValue: articleTitle,
+        isTitle: true,
+      });
+
+      titleSpan.textContent = charManager.getShuffled(articleTitle);
+    }
+
     charManager.setValueMap(freqMap, chars);
   }
 
@@ -244,12 +256,10 @@
         tn.element.textContent = shuffledVal;
       }
     });
-
-    articleTitleShuffled = charManager.getShuffled(articleTitle);
   }
 
   //replace letters by selection
-  function articleKeydown(event: KeyboardEvent) {
+  function articleKeydown(event: KeyboardEvent, isTitle: boolean = false) {
     event.preventDefault();
     const selection = document.getSelection();
     if (
@@ -259,7 +269,14 @@
       return;
     const parent = selection.anchorNode?.parentElement;
     if (!parent) return;
-    const te = textElements.find((element) => element.element == parent);
+    let te: TextElement | null;
+
+    if (isTitle) {
+      if (!articleTitle) return;
+      te = textElements.find((element) => element.isTitle) ?? null;
+    } else {
+      te = textElements.find((element) => element.element == parent) ?? null;
+    }
     if (!te) return;
     const origLetter = (
       selection.direction == "forward"
@@ -278,20 +295,28 @@
     selection.removeAllRanges();
   }
 
-  function articleClick(event: MouseEvent) {
+  function articleClick(event: MouseEvent, isTitle: boolean = false) {
     if (event.ctrlKey) return;
     const selection = document.getSelection();
     if (!selection) return;
     if (Math.abs(selection.focusOffset - selection.anchorOffset) > 0) return;
     const parent = selection.anchorNode?.parentElement;
     if (!parent) return;
-    const te = textElements.find((element) => element.element == parent);
+    let te: TextElement | null;
+
+    if (isTitle) {
+      if (!articleTitle) return;
+      te = textElements.find((element) => element.isTitle) ?? null;
+    } else {
+      te = textElements.find((element) => element.element == parent) ?? null;
+    }
     if (!te) return;
     //set indexes and expand outwards
     const endChar = selection.focusOffset;
     let wordStart = endChar;
     let wordEnd = endChar;
     const origValue = te.origValue;
+    if (!origValue[wordStart]) return;
     if (!alphabet.includes(origValue[wordStart].toLowerCase())) {
       return;
     }
@@ -407,7 +432,6 @@
         //undo replacement
         const replacement = replacerBoxData.replacements.pop();
         if (replacement && replacement.changed) {
-          //THIS WONT WORK ANYMORE BECAUSE OF CAPITALIZATION OF ORIG
           setLetterCallback(
             replacement.origJambled,
             replacement.origUserJambled.toLowerCase(),
@@ -517,37 +541,52 @@
     replacerBoxData.left.remove();
     replacerBoxData.right.remove();
     try {
+      replacerBoxData.te.element = newSpan;
+      replacerBoxData.replacementContainer.replaceWith(newSpan);
       replacerBoxData.inputBox.remove();
       replacerBoxData.inputBoxContainer.remove();
-      replacerBoxData.replacementContainer.replaceWith(newSpan);
-      replacerBoxData.te.element = newSpan;
-    } catch {}
+    } catch (e) {
+      /* thisll always toss around errors */
+    }
     replacerBoxData = null;
   }
 
-  function titleKeydown(event: KeyboardEvent) {
+  /* function titleClick(event: MouseEvent) {
+    if (event.ctrlKey) return;
     const selection = document.getSelection();
-    if (
-      selection?.focusOffset == undefined ||
-      selection?.anchorOffset == undefined
-    )
-      return;
-    const parent = selection.focusNode?.parentElement;
+    if (!selection) return;
+    if (Math.abs(selection.focusOffset - selection.anchorOffset) > 0) return;
+    const parent = selection.anchorNode?.parentElement;
     if (!parent) return;
-    const origLetter = (
-      selection.direction == "forward"
-        ? game.articleTitle[selection.anchorOffset]
-        : game.articleTitle[selection.focusOffset]
-    ).toLowerCase();
-    if (!alphabet.includes(origLetter)) return;
-    const enteredLetter = event.key.toLowerCase();
-    if (!alphabet.includes(enteredLetter)) return;
-    const jambledLetter = charManager.mapKey[origLetter];
-    if (!jambledLetter) return;
-    setLetterCallback(jambledLetter, enteredLetter, true);
-    playClick2();
-    selection.removeAllRanges();
-  }
+    if (!articleTitle) return;
+    const te: TextElement = {
+      origValue: articleTitle,
+      element: parent,
+    };
+    //set indexes and expand outwards
+    const endChar = selection.focusOffset;
+    let wordStart = endChar;
+    let wordEnd = endChar;
+    const origValue = te.origValue;
+    if (!alphabet.includes(origValue[wordStart].toLowerCase())) {
+      return;
+    }
+    //find word start index
+    while (
+      wordStart > 0 &&
+      alphabet.includes(origValue[wordStart - 1].toLowerCase())
+    ) {
+      wordStart--;
+    }
+    //word end index
+    while (
+      wordEnd < origValue.length - 1 &&
+      alphabet.includes(origValue[wordEnd + 1].toLowerCase())
+    ) {
+      wordEnd++;
+    }
+    createReplacerBox(te, wordStart, wordEnd + 1);
+  } */
 
   $effect(() => {
     if (done) {
@@ -591,9 +630,19 @@
     >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <span style="outline:none" tabindex="0" onkeydown={titleKeydown}>
-      <!-- NOTHING ELSE SHOULD GO IN THIS SPAN, OR IT WILL BREAK TITLEKEYDOWN -->
-      {articleTitleShuffled}
+    <span
+      style="outline:none"
+      tabindex="0"
+      onkeydown={(e) => {
+        articleKeydown(e, true);
+      }}
+      onclick={(e) => {
+        articleClick(e, true);
+      }}
+      bind:this={titleParent}
+    >
+      <!-- NOTHING ELSE SHOULD GO IN THIS SPAN, OR IT WILL BREAK TITLE KEYDOWN -->
+      <span></span>
     </span>
     {#if isDaily}
       <div class="daily-splash">DAILY</div>

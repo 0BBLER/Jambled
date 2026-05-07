@@ -63,6 +63,9 @@
 
   async function start() {
     if (articleViewer) {
+      if(topBar) {
+        topBar.setTitleInput("");
+      }
       if (letterPicker) {
         letterPicker.resetValues();
       }

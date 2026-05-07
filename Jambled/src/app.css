@@ -199,5 +199,5 @@ button:hover {
   padding: 0;
   white-space: pre;
   opacity: 0.6;
-  transform: translateY(-4px);
+  transform: translateY(-15%);
 }
