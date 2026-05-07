@@ -6,7 +6,7 @@ No code in this project was written by AI
 
 ## How it works
 
-You get a random article from Wikipedia, except all the letters have been <b>swapped with eachother!</b> Your goal is to figure out what the original title of the article was. There's a helpful box on the side that allows you to swap around the letters in the article.
+You get a random article from Wikipedia, except all the letters have been <b>swapped with eachother!</b> Your goal is to figure out what the original title of the article was. There's a helpful box on the side that allows you to swap around the letters in the article. That's slow though, so you can just click any word in the article, retype it, and it'll automatically replace all the letters for you. You can also hold control and select single letters in the article to retype individually.
 <br><br>
 Daily articles exist to help integrate Jambled into your morning routine. They reset at midnight UTC.
 <br><br>
