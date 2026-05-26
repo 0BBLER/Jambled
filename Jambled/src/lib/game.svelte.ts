@@ -34,6 +34,7 @@ export class Game {
   waitingForStart: boolean;
   endedTimestamp: number;
   isDaily: boolean;
+  isCustom: boolean;
 
   elapsedTime = $state(0);
 
@@ -47,6 +48,7 @@ export class Game {
     this.endedTimestamp = -1;
     this.waitingForStart = false;
     this.isDaily = false;
+    this.isCustom = false;
 
     articleLoaded.subscribe((loaded) => {
       if (loaded && this.waitingForStart) {
@@ -93,7 +95,7 @@ export class Game {
     this.previousScore = this.score;
   }
 
-  start(mode: GameMode, daily: boolean) {
+  start(mode: GameMode, daily: boolean, custom: boolean) {
     this.currentMode = mode;
     this.articleTitle = "";
     this.done = false;
@@ -107,6 +109,7 @@ export class Game {
     this.waitingForStart = true;
     this.isDaily = daily;
     this.newHighscore = false;
+    this.isCustom = custom;
   }
 
   private stopGame(win: boolean) {
@@ -115,15 +118,20 @@ export class Game {
     this.updateScore(false);
     this.endedTimestamp = Date.now();
 
-    if (this.currentMode == "classic") {
-      this.newHighscore = trySetHighscore(this.score, this.currentMode);
-      if (this.isDaily) setDailyData("classic", this.score);
-    } else if (this.currentMode == "speedrun") {
-      if (win) {
-        this.newHighscore = trySetHighscore(this.elapsedTime, this.currentMode);
-        if (this.isDaily) setDailyData("speedrun", this.elapsedTime);
-      } else {
-        if (this.isDaily) setDailyData("speedrun", SPEEDRUN_UNSET);
+    if (!this.isCustom) {
+      if (this.currentMode == "classic") {
+        this.newHighscore = trySetHighscore(this.score, this.currentMode);
+        if (this.isDaily) setDailyData("classic", this.score);
+      } else if (this.currentMode == "speedrun") {
+        if (win) {
+          this.newHighscore = trySetHighscore(
+            this.elapsedTime,
+            this.currentMode,
+          );
+          if (this.isDaily) setDailyData("speedrun", this.elapsedTime);
+        } else {
+          if (this.isDaily) setDailyData("speedrun", SPEEDRUN_UNSET);
+        }
       }
     }
   }

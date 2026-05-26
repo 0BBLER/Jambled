@@ -84,11 +84,11 @@
       }
       //custom games handling
       if (customData) {
-        game.start("speedrun", false);
+        game.start("speedrun", false, true);
         await articleViewer.loadCustomData(customData);
       } else {
         const isDaily = !playedDaily(selectedMode);
-        game.start(selectedMode, isDaily);
+        game.start(selectedMode, isDaily, false);
         await articleViewer.loadData(selectedMode, isDaily);
       }
 
