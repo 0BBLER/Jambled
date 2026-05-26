@@ -1,13 +1,14 @@
 import seedrandom from "seedrandom";
 
 //some fisher-yates
-export function shuffleArr(array: any[], seed: string = "") {
+export function shuffleArr<T>(array: T[], seed: string = ""): T[] {
   let rng = seed == "" ? undefined : seedrandom(seed);
   for (let i = array.length - 1; i > 0; i--) {
     const random = rng ? rng() : Math.random();
     let k = Math.floor(random * (i + 1));
     [array[i], array[k]] = [array[k], array[i]];
   }
+  return array;
 }
 
 //formats time as m:ss.ms

@@ -110,4 +110,13 @@ export class CharManager {
 
     this.generateMasterMap();
   }
+
+  generateFromArray(chars: string[]) {
+    if (chars.length < 26) return;
+    for (let i = 0; i < alphabet.length; i++) {
+      this.mapKey[alphabet[i]] = chars[i];
+    }
+    this.generateUserMap();
+    this.generateMasterMap();
+  }
 }

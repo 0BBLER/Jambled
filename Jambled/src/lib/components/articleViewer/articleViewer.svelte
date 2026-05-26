@@ -2,6 +2,7 @@
 <!-- also handles cleaning the article for rendering and hiding contents -->
 <script lang="ts">
   import { alphabet, CharManager, type Letter } from "$lib/charManager";
+  import { type CustomGameData } from "$lib/customGameManager";
   import { Game } from "$lib/game.svelte";
   import { playClick2 } from "$lib/sounds";
   import {
@@ -94,17 +95,50 @@
     } else {
       articleData = await getArticleData();
     }
+    isDaily = daily;
+
+    startWithArticleData({ ...articleData, charsData: daily ? "daily" : null });
+    articleLoaded.set(true);
+  }
+
+  export async function loadCustomData(data: CustomGameData) {
+    if (data.shuffledAlphabet && data.shuffledAlphabet.length < 26) {
+      alert("Error! invalid code");
+      return;
+    }
+    const articleData = await getArticleData(data.id);
+    startWithArticleData({ ...articleData, charsData: data.shuffledAlphabet });
+    articleLoaded.set(true);
+  }
+
+  function startWithArticleData(data: {
+    title: string;
+    text: Record<string, string>;
+    charsData: string[] | "daily" | string | null; //probably bad practice but
+    /* 
+    string[] for chars array
+    "daily" for daily
+    string for seed
+    null for random
+    */
+  }) {
+    if (!articleDiv || !data) return;
+
     articleTitle = "";
-    articleTitle = articleData.title;
+    articleTitle = data.title;
     if (articleTitle) {
       game.articleTitle = articleTitle;
     }
-    game.charManager.generate(daily ? (articleTitle ?? "") : ""); //generate map here
+    if (data.charsData == "daily") {
+      game.charManager.generate(articleTitle ?? ""); //generate map here
+    } else if (data.charsData && typeof data.charsData === "object") {
+      game.charManager.generateFromArray(data.charsData); //generate map here
+    } else if (data.charsData == null) {
+      game.charManager.generate(""); //generate map here
+    }
 
-    articleDiv.innerHTML = articleData.text["*"];
+    articleDiv.innerHTML = data.text["*"];
     cleanArticle();
-    isDaily = daily;
-    articleLoaded.set(true);
   }
 
   //remove elements from articleDiv by selector
