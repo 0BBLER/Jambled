@@ -7,6 +7,11 @@
   import Modal from "$lib/components/modal/Modal.svelte";
   import Title from "$lib/components/title/Title.svelte";
   import TopBar from "$lib/components/topBar/TopBar.svelte";
+  import {
+    createRandomCustomGame,
+    type CustomGameData,
+    decodeCustomGame,
+  } from "$lib/customGameManager";
   import { Game, scoringRules } from "$lib/game.svelte";
   import { playClick, playClick2 } from "$lib/sounds";
   import {
@@ -41,6 +46,12 @@
   let topBar = $state<TopBar>();
   let mainMenuPopup = $state<Modal>();
   let selectedMode = $state<GameMode>("classic");
+  let customMenuOpen = $state<boolean>(false);
+  let createRandomTextContent = $state<string>("Create random");
+  let randomCustomGameData = $state<{ shouldShow: boolean; data: string }>({
+    shouldShow: false,
+    data: "",
+  });
 
   let playedClassic = $derived.by<boolean>(() => {
     return (
@@ -61,17 +72,25 @@
       loadDailyArticles();
   });
 
-  async function start() {
+  async function start(
+    customData: CustomGameData | null = null
+  ) {
     if (articleViewer) {
-      if(topBar) {
+      if (topBar) {
         topBar.setTitleInput("");
       }
       if (letterPicker) {
         letterPicker.resetValues();
       }
-      const isDaily = !playedDaily(selectedMode);
-      game.start(selectedMode, isDaily);
-      await articleViewer.loadData(selectedMode, isDaily);
+      //custom games handling
+      if (customData) {
+        game.start("speedrun", false);
+        await articleViewer.loadCustomData(customData);
+      } else {
+        const isDaily = !playedDaily(selectedMode);
+        game.start(selectedMode, isDaily);
+        await articleViewer.loadData(selectedMode, isDaily);
+      }
 
       reactiveUserMap = {};
       reactiveUserMap = {
@@ -134,7 +153,7 @@
   }
 
   function setTitleValueCallback(submit: boolean) {
-    if(game.done) return;
+    if (game.done) return;
     if (topBar) {
       topBar.setTitleInput(game.charManager.getShuffled(game.articleTitle));
       if (submit) {
@@ -143,6 +162,27 @@
         }
       }
     }
+  }
+
+  async function randomCustomClicked() {
+    randomCustomGameData.shouldShow = false;
+    randomCustomGameData.data = "";
+    createRandomTextContent = "Loading...";
+    try {
+      const encoded = await createRandomCustomGame();
+      randomCustomGameData.shouldShow = true;
+      randomCustomGameData.data = encoded;
+    } catch (err) {
+      alert("An error occured :(");
+    }
+    createRandomTextContent = "Create random";
+  }
+
+  async function loadCustomClicked() {
+    const decodedData = decodeCustomGame(prompt("") ?? "");
+    if (!decodedData) return;
+    showTitleScreen = false;
+    start(decodedData);
   }
 
   $effect(() => {
@@ -360,6 +400,29 @@
       src="images/github.png"
     />
   </button>
+  <!-- custom game button -->
+  <div class="custom-container">
+    <button
+      onclick={() => {
+        customMenuOpen = !customMenuOpen;
+      }}>Custom games</button
+    >
+    {#if customMenuOpen}
+      <button onclick={randomCustomClicked}>{createRandomTextContent}</button>
+      {#if randomCustomGameData.shouldShow}
+        <input
+          class="custom-game-code"
+          autocapitalize="off"
+          autocomplete="off"
+          autocorrect="off"
+          name="custom game code"
+          value={randomCustomGameData.data}
+        />
+      {/if}
+      <!--  <button>Create custom</button> -->
+      <button onclick={loadCustomClicked}>Play custom</button>
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -516,5 +579,31 @@
     bottom: 8px;
     left: 8px;
     text-align: left;
+  }
+
+  .custom-container {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+  }
+
+  .custom-container > button {
+    width: fit-content;
+  }
+
+  .custom-game-code {
+    background-color: rgba(228, 228, 228, 0.144);
+    border-radius: 3px;
+    color: white;
+    border: none;
+    outline: none;
+    margin: 0;
+  }
+
+  .custom-game-code:focus {
+    border-bottom: 2px solid rgba(192, 192, 192, 0.596);
   }
 </style>

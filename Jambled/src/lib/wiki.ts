@@ -39,7 +39,7 @@ export async function getDailyArticle(
   return await getArticleData(pages[pageIndex]);
 }
 
-async function getRandomWikiArticle() {
+export async function getRandomWikiArticle() {
   //40 random
   const data = await fetch(
     "https://en.wikipedia.org/w/api.php?action=query&format=json&generator=random&grnnamespace=0&grnlimit=80&prop=info&origin=*",
