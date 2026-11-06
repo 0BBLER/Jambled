@@ -1,7 +1,7 @@
 <script lang="ts">
   import { type Letter } from "$lib/charManager";
-  import ArticleViewer from "$lib/components/articleViewer/ArticleViewer.svelte";
   import FinishPopup from "$lib/components/finishPopup/FinishPopup.svelte";
+  import ArticleViewer from "$lib/components/articleViewer/ArticleViewer.svelte";
   import GiveUpPopup from "$lib/components/giveUpPopup/GiveUpPopup.svelte";
   import LetterPicker from "$lib/components/letterPicker/LetterPicker.svelte";
   import Modal from "$lib/components/modal/Modal.svelte";
@@ -72,9 +72,7 @@
       loadDailyArticles();
   });
 
-  async function start(
-    customData: CustomGameData | null = null
-  ) {
+  async function start(customData: CustomGameData | null = null) {
     if (articleViewer) {
       if (topBar) {
         topBar.setTitleInput("");
@@ -170,6 +168,7 @@
     createRandomTextContent = "Loading...";
     try {
       const encoded = await createRandomCustomGame();
+      console.log("code:", encoded);
       randomCustomGameData.shouldShow = true;
       randomCustomGameData.data = encoded;
     } catch (err) {
